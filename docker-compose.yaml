@@ -1,0 +1,10 @@
+services:
+  app:
+    container_name: ${PROJECT_NAME}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - ${PORT}:${PORT}
+    environment:
+      - NODE_ENV=${NODE_ENV}

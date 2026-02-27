@@ -1,4 +1,8 @@
-import { ACCESS_TOKEN, RECOIL_PERSIST_KEY, REFRESH_TOKEN } from "@/lib/constants/sharedStrings";
+import {
+  ACCESS_TOKEN,
+  RECOIL_PERSIST_KEY,
+  REFRESH_TOKEN,
+} from "../constants/sharedStrings";
 
 export const writeAccessToken = (accessToken: string) => {
   localStorage.setItem(ACCESS_TOKEN, accessToken);
@@ -17,7 +21,8 @@ export const readRefreshToken = () => {
 };
 
 export const getUserInfo = () => {
-  const localStorageUser: string | null = localStorage.getItem(RECOIL_PERSIST_KEY);
+  const localStorageUser: string | null =
+    localStorage.getItem(RECOIL_PERSIST_KEY);
   if (localStorageUser) {
     const storageJson = JSON.parse(localStorageUser);
     return storageJson["user"];

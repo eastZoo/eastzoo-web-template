@@ -1,13 +1,23 @@
 import { RecoilRoot } from "recoil";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "styled-components";
 import { BrowserRouter } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import { theme } from "@/styles/theme";
 import { GlobalStyle } from "@/styles/GlobalStyle";
-import { queryClient } from "@/lib/queryClient";
 import AppRoutes from "@/lib/core/routes/Routes";
+import "maplibre-gl/dist/maplibre-gl.css";
+
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 export default function AppProviders() {
   return (
@@ -17,7 +27,17 @@ export default function AppProviders() {
           <BrowserRouter>
             <GlobalStyle />
             <AppRoutes />
-            <ReactQueryDevtools initialIsOpen={false} />
+            <ToastContainer
+              position="top-right"
+              autoClose={3000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+            />
           </BrowserRouter>
         </ThemeProvider>
       </QueryClientProvider>

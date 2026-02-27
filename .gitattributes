@@ -1,0 +1,2 @@
+*.pmtiles filter=lfs diff=lfs merge=lfs -text
+public/allbusan.pmtiles filter=lfs diff=lfs merge=lfs -text
