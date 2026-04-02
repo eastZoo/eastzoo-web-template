@@ -6,6 +6,19 @@ React + TypeScript + Vite 기반으로 구성된 스타터 템플릿입니다.
 React Query, Recoil, Styled-Components, React Router, Axios 토큰 갱신 로직 등을 기본 제공해 팀 내 공통 보일러플레이트로 활용할 수 있습니다.
 
 ---
+# 브랜치별 템플릿 미리보기
+
+>- 아래 명령어르 통해서 template를 다운받을 수 있습니다.
+>npx create-eastzoo-vite-app {./my-app} --branch {templates/template1}
+
+## @templates/template1
+![이미지](./public/uploads/template1-1.png)
+![이미지](./public/uploads/template1-2.png)
+
+## @templates/template2
+![이미지](./public/uploads/template2-1.png)
+![이미지](./public/uploads/template2-2.png)
+
 
 ## 주요 기술 스택
 
