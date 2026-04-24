@@ -1,12 +1,13 @@
 import type { JSX } from "react";
 
 export interface MenuItem {
-  id: number;
+  oid: string;
   title: string;
-  icon?: JSX.Element;
+  icon?: string;
   depth: number;
   path?: string;
   submenu?: MenuItem[];
+  allowNavigation?: boolean;
 }
 
 export interface MenuType {
@@ -17,6 +18,7 @@ export interface MenuType {
   parentId: string;
   path?: string;
   sortRef?: number;
+  allowNavigation?: boolean;
 }
 
 export interface Tab {

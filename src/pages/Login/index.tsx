@@ -4,8 +4,38 @@ import { useLogin } from "@/lib/hooks/useAuth";
 import { isApiSuccess } from "@/types/api";
 import { readAccessToken } from "@/lib/functions/authFunctions";
 import { useLocation, useNavigate } from "react-router-dom";
-import { DarkInput } from "@/atoms/DarkInput";
-import { SecurityChip } from "@/atoms/SecurityChip";
+import { IsButton, IsInputText, IsCheckbox, IsChip } from "insystem-atoms";
+
+// 다크 테마 스타일 토큰 (Figma 디자인 기준)
+const DARK_THEME = {
+  label: {
+    color: "rgba(255, 255, 255, 0.5)",
+    fontSize: "12px",
+    letterSpacing: "0.6px",
+    textTransform: "uppercase" as const,
+  },
+  field: {
+    background: "rgba(255, 255, 255, 0.06)",
+    borderColor: "rgba(255, 255, 255, 0.12)",
+    borderRadius: "10px",
+    "--is-input-placeholder-color": "rgba(255, 255, 255, 0.2)",
+  } as React.CSSProperties,
+  input: { color: "rgba(255, 255, 255, 0.8)" },
+  icon: { color: "rgba(255, 255, 255, 0.3)" },
+  checkbox: {
+    box: {
+      background: "rgba(255, 255, 255, 0.06)",
+      borderColor: "rgba(255, 255, 255, 0.2)",
+    },
+    label: { color: "rgba(255, 255, 255, 0.4)", fontSize: "13px" },
+  },
+  chip: {
+    background: "rgba(255, 255, 255, 0.04)",
+    border: "1px solid rgba(255, 255, 255, 0.07)",
+    text: { color: "rgba(255, 255, 255, 0.3)" },
+    icon: { color: "rgba(255, 255, 255, 0.3)", opacity: 0.7 },
+  },
+} as const;
 
 const SEED_ACCOUNTS = [
   { email: "admin@eastzoo.local", role: "ADMIN" },
@@ -36,7 +66,13 @@ const ShieldCheckIcon = () => (
 );
 
 const UserIcon = () => (
-  <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    viewBox="0 0 15 15"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+  >
     <path
       d="M7.5 7.5C9.15685 7.5 10.5 6.15685 10.5 4.5C10.5 2.84315 9.15685 1.5 7.5 1.5C5.84315 1.5 4.5 2.84315 4.5 4.5C4.5 6.15685 5.84315 7.5 7.5 7.5Z"
       stroke="currentColor"
@@ -55,7 +91,13 @@ const UserIcon = () => (
 );
 
 const LockIcon = () => (
-  <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    viewBox="0 0 15 15"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+  >
     <path
       d="M11.25 6.75H3.75C3.05964 6.75 2.5 7.30964 2.5 8V12.5C2.5 13.1904 3.05964 13.75 3.75 13.75H11.25C11.9404 13.75 12.5 13.1904 12.5 12.5V8C12.5 7.30964 11.9404 6.75 11.25 6.75Z"
       stroke="currentColor"
@@ -73,60 +115,16 @@ const LockIcon = () => (
   </svg>
 );
 
-const EyeOffIcon = () => (
-  <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path
-      d="M6.27273 3.04545C6.66818 2.95455 7.07727 2.90909 7.5 2.90909C11.0455 2.90909 13.5 7.5 13.5 7.5C13.0909 8.27273 12.5727 8.97273 11.9727 9.58636"
-      stroke="currentColor"
-      strokeWidth="1.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M8.79545 8.79545C8.45455 9.13636 7.99091 9.33182 7.5 9.33182C7.00909 9.33182 6.54545 9.13636 6.20455 8.79545C5.86364 8.45455 5.66818 7.99091 5.66818 7.5C5.66818 7.00909 5.86364 6.54545 6.20455 6.20455"
-      stroke="currentColor"
-      strokeWidth="1.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M3.02727 3.02727C2.05909 3.89091 1.22727 4.99091 0.5 6.5C0.5 6.5 2.95455 11.0909 6.5 11.0909C7.51364 11.0909 8.44091 10.7727 9.25909 10.2591"
-      stroke="currentColor"
-      strokeWidth="1.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M1.5 1.5L13.5 13.5"
-      stroke="currentColor"
-      strokeWidth="1.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-const EyeIcon = () => (
-  <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path
-      d="M1.5 7.5C1.5 7.5 3.95455 3 7.5 3C11.0455 3 13.5 7.5 13.5 7.5C13.5 7.5 11.0455 12 7.5 12C3.95455 12 1.5 7.5 1.5 7.5Z"
-      stroke="currentColor"
-      strokeWidth="1.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M7.5 9.5C8.60457 9.5 9.5 8.60457 9.5 7.5C9.5 6.39543 8.60457 5.5 7.5 5.5C6.39543 5.5 5.5 6.39543 5.5 7.5C5.5 8.60457 6.39543 9.5 7.5 9.5Z"
-      stroke="currentColor"
-      strokeWidth="1.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-const DocumentIcon = () => (
-  <svg viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+const DocumentIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    style={{ color: props.color }}
+    viewBox="0 0 11 11"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    width="12"
+    height="12"
+    {...props}
+  >
     <path
       d="M6.1875 1.375H2.75C2.50136 1.375 2.2629 1.47377 2.08709 1.64959C1.91127 1.8254 1.8125 2.06386 1.8125 2.3125V8.6875C1.8125 8.93614 1.91127 9.1746 2.08709 9.35041C2.2629 9.52623 2.50136 9.625 2.75 9.625H8.25C8.49864 9.625 8.7371 9.52623 8.91291 9.35041C9.08873 9.1746 9.1875 8.93614 9.1875 8.6875V4.375L6.1875 1.375Z"
       stroke="currentColor"
@@ -144,8 +142,15 @@ const DocumentIcon = () => (
   </svg>
 );
 
-const LockClosedIcon = () => (
-  <svg viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+const LockClosedIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 11 11"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    width="12"
+    height="12"
+    {...props}
+  >
     <path
       d="M8.25 5.04167H2.75C2.24374 5.04167 1.83333 5.45208 1.83333 5.95833V9.16667C1.83333 9.67293 2.24374 10.0833 2.75 10.0833H8.25C8.75626 10.0833 9.16667 9.67293 9.16667 9.16667V5.95833C9.16667 5.45208 8.75626 5.04167 8.25 5.04167Z"
       stroke="currentColor"
@@ -163,8 +168,16 @@ const LockClosedIcon = () => (
   </svg>
 );
 
-const ClipboardIcon = () => (
-  <svg viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+const ClipboardIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    style={{ color: props.color }}
+    viewBox="0 0 11 11"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    width="12"
+    height="12"
+    {...props}
+  >
     <path
       d="M7.33333 1.83333H8.25C8.49864 1.83333 8.7371 1.93211 8.91291 2.10792C9.08873 2.28374 9.1875 2.5222 9.1875 2.77083V9.14583C9.1875 9.39447 9.08873 9.63293 8.91291 9.80875C8.7371 9.98456 8.49864 10.0833 8.25 10.0833H2.75C2.50136 10.0833 2.2629 9.98456 2.08709 9.80875C1.91127 9.63293 1.8125 9.39447 1.8125 9.14583V2.77083C1.8125 2.5222 1.91127 2.28374 2.08709 2.10792C2.2629 1.93211 2.50136 1.83333 2.75 1.83333H3.66667"
       stroke="currentColor"
@@ -194,7 +207,6 @@ export default function LoginPage() {
   const loginMutation = useLogin();
   const [userId, setUserId] = useState<string>(SEED_ACCOUNTS[0].email);
   const [password, setPassword] = useState<string>(SEED_PASSWORD);
-  const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -264,77 +276,73 @@ export default function LoginPage() {
             {errorMessage && <S.ErrorMessage>{errorMessage}</S.ErrorMessage>}
 
             {/* 아이디 입력 */}
-            <DarkInput
+            <IsInputText
               label="아이디"
-              type="text"
+              labelShow
+              size="medium"
               value={userId}
               onChange={(e) => {
                 setUserId(e.target.value);
                 setErrorMessage("");
               }}
-              placeholder="아이디를 입력하세요"
-              leftIcon={<UserIcon />}
+              leftIconSlot={<UserIcon />}
+              labelStyle={DARK_THEME.label}
+              fieldStyle={DARK_THEME.field}
+              inputStyle={DARK_THEME.input}
+              iconStyle={DARK_THEME.icon}
+              placeholderText="아이디를 입력하세요"
+              placeholderActive
+              fullWidth
               required
             />
 
             {/* 비밀번호 입력 */}
-            <DarkInput
+            <IsInputText
               label="비밀번호"
-              type={showPassword ? "text" : "password"}
+              labelShow
+              size="medium"
+              type="password"
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
                 setErrorMessage("");
               }}
-              placeholder="비밀번호를 입력하세요"
-              leftIcon={<LockIcon />}
-              rightIcon={showPassword ? <EyeIcon /> : <EyeOffIcon />}
-              onRightIconClick={() => setShowPassword(!showPassword)}
+              placeholderText="비밀번호를 입력하세요"
+              leftIconSlot={<LockIcon />}
+              labelStyle={DARK_THEME.label}
+              fieldStyle={DARK_THEME.field}
+              inputStyle={DARK_THEME.input}
+              iconStyle={DARK_THEME.icon}
+              clearable={true}
+              fullWidth
               required
             />
 
             {/* 로그인 유지 & 비밀번호 찾기 */}
             <S.OptionsRow>
-              <S.CheckboxLabel>
-                <S.Checkbox
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                />
-                <S.CheckboxText>로그인 상태 유지</S.CheckboxText>
-              </S.CheckboxLabel>
+              <IsCheckbox
+                size="small"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                label="로그인 상태 유지"
+                labelStyle={DARK_THEME.checkbox.label}
+                boxStyle={DARK_THEME.checkbox.box}
+              />
               <S.Link href="#">비밀번호 찾기</S.Link>
             </S.OptionsRow>
 
             {/* 로그인 버튼 */}
-            <S.LoginButton
+            <IsButton
               type="submit"
+              variant="solid"
+              color="primary"
+              size="lg"
+              fullWidth
               disabled={loginMutation.isPending}
-              $isLoading={loginMutation.isPending}
+              loading={loginMutation.isPending}
             >
-              {loginMutation.isPending ? (
-                <>
-                  <S.Spinner fill="none" viewBox="0 0 24 24">
-                    <circle
-                      opacity="0.25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      opacity="0.75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    />
-                  </S.Spinner>
-                  로그인 중...
-                </>
-              ) : (
-                "로그인"
-              )}
-            </S.LoginButton>
+              {loginMutation.isPending ? "로그인 중..." : "로그인"}
+            </IsButton>
           </S.FormContainer>
 
           {/* 구분선 */}
@@ -344,11 +352,44 @@ export default function LoginPage() {
             <S.DividerLine />
           </S.Divider>
 
-          {/* 보안 칩들 */}
+          {/* 보안 칩들 - insystem-atoms IsChip 사용 */}
           <S.SecurityChips>
-            <SecurityChip icon={<DocumentIcon />} label="원문 미전송" />
-            <SecurityChip icon={<LockClosedIcon />} label="암호화 통신" />
-            <SecurityChip icon={<ClipboardIcon />} label="감사 로그" />
+            <IsChip
+              variant="outlined"
+              size="sm"
+              leftIconSlot={<DocumentIcon style={{ color: "#2EC4A0" }} />}
+              style={DARK_THEME.chip}
+              contentStyle={DARK_THEME.chip.text}
+              iconStyle={DARK_THEME.chip.icon}
+              interaction={false}
+            >
+              원문 미전송
+            </IsChip>
+            <IsChip
+              variant="outlined"
+              size="sm"
+              leftIconSlot={<LockClosedIcon style={{ color: "#2EC4A0" }} />}
+              style={DARK_THEME.chip}
+              contentStyle={DARK_THEME.chip.text}
+              iconStyle={DARK_THEME.chip.icon}
+              interaction={false}
+            >
+              암호화 통신
+            </IsChip>
+            <IsChip
+              variant="outlined"
+              size="sm"
+              leftIconSlot={<ClipboardIcon style={{ color: "#2EC4A0" }} />}
+              style={DARK_THEME.chip}
+              contentStyle={DARK_THEME.chip.text}
+              iconStyle={DARK_THEME.chip.icon}
+              interaction={false}
+              onClick={() => {
+                console.log("감사 로그");
+              }}
+            >
+              감사 로그
+            </IsChip>
           </S.SecurityChips>
 
           {/* 푸터 */}

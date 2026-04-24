@@ -76,12 +76,18 @@ export const ROUTE_CONFIGS: RouteConfig[] = [
   },
 
   // { path: "/users", name: "Users", title: "사용자 목록", protected: true },
-  // {
-  //   path: "/users/:id",
-  //   name: "UserDetail",
-  //   title: "사용자 상세",
-  //   protected: true,
-  // },
+  {
+    path: "/file-management",
+    name: "FileManagement",
+    title: "파일 관리",
+    protected: true,
+  },
+  {
+    path: "/chat",
+    name: "Chat",
+    title: "채팅",
+    protected: true,
+  },
 
   {
     path: "/sample",

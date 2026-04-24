@@ -48,6 +48,8 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "src"),
     },
+    // npm link 사용 시 React/styled-components 중복 방지
+    dedupe: ["react", "react-dom", "styled-components"],
   },
   server: {
     port: 3000, // 필요시 변경

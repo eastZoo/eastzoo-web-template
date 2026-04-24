@@ -86,12 +86,58 @@ declare module "styled-components" {
       // Sidemenu
       sidemenuBackground: string;
       sidemenuBackgroundLight: string;
+      sidemenuBorder: string;
+      sidemenuTextNormal: string;
+      sidemenuTextActive: string;
       sidemenuActive: string;
       sidemenuHover: string;
       sidemenuDivider: string;
       sidemenuScrollbar: string;
       sidemenuLogoutButton: string;
       sidemenuLogoutButtonHover: string;
+      sidemenuIconBg: string;
+      sidemenuAvatarBg: string;
+      sidemenuAvatarBorder: string;
+      sidemenuAvatarText: string;
+      sidemenuUserName: string;
+      sidemenuUserRole: string;
+    };
+
+    semantic?: {
+      primary?: {
+        normal?: string;
+        strong?: string;
+        heavy?: string;
+      };
+      label?: {
+        normal?: string;
+        neutral?: string;
+        alternative?: string;
+        assistive?: string;
+        disable?: string;
+      };
+      background?: {
+        normal?: string;
+        alternative?: string;
+        elevated?: string;
+      };
+      line?: {
+        normalNormal?: string;
+        solidNeutral?: string;
+        solidAlternative?: string;
+      };
+      status?: {
+        negative?: string;
+      };
+      staticColor?: {
+        white?: string;
+      };
+    };
+
+    spacing?: {
+      radius?: {
+        md?: number;
+      };
     };
   }
 }

@@ -1,14 +1,25 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
-export const SidemenuSection = styled.section`
+interface SidemenuSectionProps {
+  $isCollapsed?: boolean;
+}
+
+export const SidemenuSection = styled.section<SidemenuSectionProps>`
   grid-area: MN;
   display: grid;
-  width: 100%;
   height: 100svh;
-  background: linear-gradient(
-    to left,
-    ${(props) => props.theme.colors.sidemenuBackgroundLight},
-    ${(props) => props.theme.colors.sidemenuBackground}
-  );
-  grid-template-rows: 90px 1fr auto;
+  background: ${(props) => props.theme.colors.sidemenuBackground};
+  border-right: 1px solid ${(props) => props.theme.colors.sidemenuBorder};
+  grid-template-rows: 64px 1fr auto;
+  transition: width 0.2s ease;
+  overflow: hidden;
+
+  ${(props) =>
+    props.$isCollapsed
+      ? css`
+          width: 80px;
+        `
+      : css`
+          width: 220px;
+        `}
 `;

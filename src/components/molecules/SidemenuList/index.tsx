@@ -5,22 +5,24 @@ import React from "react";
 interface SidemenuListProps {
   menuList: any;
   depth?: number;
+  isCollapsed?: boolean;
   onContextMenu: (event: React.MouseEvent, target: any) => void;
 }
 
 const SidemenuList = ({
   menuList,
   depth,
+  isCollapsed = false,
   onContextMenu,
 }: SidemenuListProps) => {
   return (
-    <S.SidemenuListBox $depth={depth ? depth : 1}>
+    <S.SidemenuListBox $depth={depth ?? 1} $isCollapsed={isCollapsed}>
       {menuList.map((item: any) => {
-    
         return (
           <SidemenuItem
             data={item}
             key={item.oid}
+            isCollapsed={isCollapsed}
             onContextMenu={onContextMenu}
           />
         );

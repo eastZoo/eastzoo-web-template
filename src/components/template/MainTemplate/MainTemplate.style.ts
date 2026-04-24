@@ -1,14 +1,4 @@
 import styled, { css } from "styled-components";
-import { SidemenuListBox } from "@/components/molecules/SidemenuList/SidemenuList.style";
-import {
-  SidemenuTop,
-  SidemenuTopSpan,
-} from "@/components/atoms/SidemenuTop/SidemenuTop.style";
-import {
-  SidemenuItemBox,
-  SidemenuListItem,
-  TitBox,
-} from "@/components/atoms/SidemenuItem/SidemenuItem.style";
 
 interface MainBoxProps {
   $asideOpen: boolean;
@@ -22,50 +12,14 @@ export const MainTemplate = styled.div<MainBoxProps>`
     "MN CT"
     "MN CT";
   grid-template-columns: ${({ $asideOpen }) =>
-    $asideOpen ? "260px auto" : "58px auto"};
+    $asideOpen ? "220px auto" : "80px auto"};
   grid-template-rows: 52px auto;
-  transition: all 0.3s ease;
+  transition: grid-template-columns 0.2s ease;
 
-  // 사이드메뉴 OPEN/CLOSE
-  ${({ $asideOpen }) =>
-    $asideOpen === false &&
-    css`
-      ${SidemenuTop} {
-        ${SidemenuTopSpan} {
-          display: none;
-        }
-      }
-
-      ${SidemenuListItem} {
-        ${TitBox} {
-          display: none;
-        }
-
-        & > svg {
-          display: none;
-        }
-      }
-
-      ${SidemenuItemBox} {
-        & > ${SidemenuListBox} {
-          max-height: 0px;
-        }
-      }
-    `}
-
-  // 화면크기(1400px 미만) 설정
-  @media (max-width: 1399px) {
+  // 화면크기(1200px 미만) 설정 - 모바일/태블릿
+  @media (max-width: 1199px) {
     grid-template-columns: ${({ $asideOpen }) =>
-      $asideOpen ? "260px auto" : "0 auto"};
-
-    // 사이드메뉴 OPEN/CLOSE
-    ${({ $asideOpen }) =>
-      $asideOpen === false &&
-      css`
-        ${SidemenuTop} {
-          display: none;
-        }
-      `}
+      $asideOpen ? "220px auto" : "0 auto"};
   }
 `;
 
@@ -75,7 +29,7 @@ export const ContentSection = styled.section`
   overflow-x: hidden;
   grid-area: CT;
   height: calc(100svh);
-  background: ${(props) => props.theme.colors.primary5};
+  background: ${(props) => props.theme.colors.gray50};
   display: flex;
   flex-direction: column;
 `;

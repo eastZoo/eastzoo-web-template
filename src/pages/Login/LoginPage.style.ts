@@ -118,6 +118,8 @@ export const InputGroup = styled.div`
   gap: 8px;
 `;
 
+/* insystem-atoms 컴포넌트는 이제 직접 스타일 props를 받으므로 wrapper 불필요 */
+
 export const OptionsRow = styled.div`
   display: flex;
   align-items: center;

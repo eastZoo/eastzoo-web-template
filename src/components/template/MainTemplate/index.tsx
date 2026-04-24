@@ -5,17 +5,21 @@ import useContextMenu from "@/lib/hooks/useContextMenu";
 import { Sidemenu } from "@/components/molecules/Sidemenu";
 import { readAccessToken } from "@/lib/functions/authFunctions";
 import { Navigate } from "react-router-dom";
+import { useLogout } from "@/lib/hooks/useAuth";
 
 interface MainTemplateProps {
   children: React.ReactElement;
 }
 
 export const MainTemplate = ({ children }: MainTemplateProps) => {
+  /** ============================= state 영역 ============================= */
   const accessToken = readAccessToken();
 
   const [asideOpen, setAsideOpen] = useState(true);
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
-  // const permissions = useRecoilValue<any>(permissionsState);
+
+  // 로그아웃 뮤테이션
+  const logoutMutation = useLogout();
 
   const {
     contextMenu,
@@ -23,10 +27,20 @@ export const MainTemplate = ({ children }: MainTemplateProps) => {
     handleOpenInNewTab,
     handleOpenInNewWindow,
   } = useContextMenu();
+  /** ============================= API 영역 ============================= */
 
+  /** ============================= 비즈니스 로직 영역 ============================= */
   const resizeListener = () => {
     setInnerWidth(window.innerWidth);
   };
+
+  const handleAsideToggle = () => {
+    setAsideOpen(!asideOpen);
+  };
+
+  /** ============================= 컴포넌트 영역 ============================= */
+
+  /** ============================= useEffect 영역 ============================= */
 
   useEffect(() => {
     window.addEventListener("resize", resizeListener);
@@ -38,10 +52,6 @@ export const MainTemplate = ({ children }: MainTemplateProps) => {
     setAsideOpen(innerWidth >= 1200);
   }, [innerWidth]);
 
-  const handleAsideOpen = () => {
-    setAsideOpen(!asideOpen);
-  };
-
   if (!accessToken) {
     return <Navigate to="/auth/login" />;
   }
@@ -49,9 +59,10 @@ export const MainTemplate = ({ children }: MainTemplateProps) => {
   return (
     <S.MainTemplate $asideOpen={asideOpen}>
       <Sidemenu
-        asideToggle={handleAsideOpen}
+        isCollapsed={!asideOpen}
+        asideToggle={handleAsideToggle}
         onContextMenu={handleContextMenu}
-        // permissions={permissions ?? []}
+        onLogout={() => logoutMutation.mutate()}
       />
       <S.ContentSection>{children}</S.ContentSection>
     </S.MainTemplate>
