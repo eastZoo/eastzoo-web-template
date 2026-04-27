@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { isValidElement, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import * as S from "./SidemenuItem.style";
 import SidemenuList from "../../molecules/SidemenuList";
 import { useSelectedMenu } from "@/store/menu";
-
+import IconChatBubble from "@/styles/assets/svg/ChatBubble.svg?react";
+import IconDasboard from "@/styles/assets/svg/icon_dashboard.svg?react";
+import IconMenu03 from "@/styles/assets/svg/icon_menu_03.svg?react";
 /**
  * Figma Document 아이콘 컴포넌트 - stroke 스타일
  * 모든 메뉴에 동일한 Document 아이콘 사용
@@ -28,6 +30,24 @@ const MenuIcon = () => {
       />
     </svg>
   );
+};
+
+const menuIconMap = {
+  IconChatBubble: <IconChatBubble />,
+  IconDasboard: <IconDasboard />,
+  IconMenu03: <IconMenu03 />,
+} as const;
+
+const renderMenuIcon = (iconValue: unknown) => {
+  if (isValidElement(iconValue)) {
+    return iconValue;
+  }
+
+  if (typeof iconValue === "string") {
+    return menuIconMap[iconValue as keyof typeof menuIconMap] ?? <MenuIcon />;
+  }
+
+  return <MenuIcon />;
 };
 
 interface SidemenuItemProps {
@@ -130,14 +150,18 @@ export const SidemenuItem = ({
               onClick={handleSubmenuClick}
             >
               <S.SidemenuItemTit $isCollapsed={isCollapsed}>
-                {data.depth === 1 && <MenuIcon />}
+                {data.depth === 1 && renderMenuIcon(data.icon)}
                 {data.depth !== 1 && !isCollapsed && (
                   <S.BulletPoint>•</S.BulletPoint>
                 )}
                 <S.TitBox $isCollapsed={isCollapsed}>{data.title}</S.TitBox>
               </S.SidemenuItemTit>
               {data.depth === 1 && data.submenu && !isCollapsed && (
-                <S.ArrowIcon $open={submenu} $isCollapsed={isCollapsed} aria-hidden>
+                <S.ArrowIcon
+                  $open={submenu}
+                  $isCollapsed={isCollapsed}
+                  aria-hidden
+                >
                   <svg
                     viewBox="0 0 16 16"
                     fill="none"
@@ -154,9 +178,7 @@ export const SidemenuItem = ({
                 </S.ArrowIcon>
               )}
             </S.SidemenuListItem>
-            {isCollapsed && (
-              <S.ItemTooltip>{data.title}</S.ItemTooltip>
-            )}
+            {isCollapsed && <S.ItemTooltip>{data.title}</S.ItemTooltip>}
           </S.ItemWrapper>
           <SidemenuList
             depth={data.depth + 1}
@@ -175,16 +197,14 @@ export const SidemenuItem = ({
             onClick={handleMenuClick}
           >
             <S.SidemenuItemTit $isCollapsed={isCollapsed}>
-              {data.depth === 1 && <MenuIcon />}
+              {data.depth === 1 && renderMenuIcon(data.icon)}
               {data.depth !== 1 && !isCollapsed && (
                 <S.BulletPoint>•</S.BulletPoint>
               )}
               <S.TitBox $isCollapsed={isCollapsed}>{data.title}</S.TitBox>
             </S.SidemenuItemTit>
           </S.SidemenuListItem>
-          {isCollapsed && (
-            <S.ItemTooltip>{data.title}</S.ItemTooltip>
-          )}
+          {isCollapsed && <S.ItemTooltip>{data.title}</S.ItemTooltip>}
         </S.ItemWrapper>
       )}
     </S.SidemenuItemBox>

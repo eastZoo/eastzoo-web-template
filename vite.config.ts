@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import svgr from "vite-plugin-svgr";
 import path from "node:path";
 import { execSync } from "node:child_process";
 
@@ -28,6 +29,7 @@ function syncPagesPlugin() {
 export default defineConfig({
   plugins: [
     syncPagesPlugin(),
+    svgr(),
     react({
       // styled-components Babel 플러그인 활성화 (대중적 옵션)
       babel: {

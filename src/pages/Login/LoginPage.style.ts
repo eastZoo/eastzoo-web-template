@@ -1,69 +1,84 @@
-import { styled, keyframes } from "styled-components";
+/**
+ * 로그인 페이지 스타일
+ * @description Figma 디자인 기반 분할 화면 레이아웃 스타일 정의
+ */
+import styled from "styled-components";
 
+/* ========================================
+   메인 레이아웃
+   ======================================== */
+
+/** 전체 컨테이너 - 분할 화면 레이아웃 */
 export const Container = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: center;
   min-height: 100vh;
   width: 100%;
-  position: relative;
-  background: linear-gradient(90deg, rgb(17, 28, 78) 0%, rgb(17, 28, 78) 100%);
 `;
 
-export const GridBackground = styled.div`
-  position: absolute;
-  inset: 0;
-  background-image: linear-gradient(
-      180deg,
-      rgba(46, 196, 160, 0.04) 2.5%,
-      rgba(46, 196, 160, 0) 2.5%
-    ),
-    linear-gradient(
-      90deg,
-      rgba(46, 196, 160, 0.04) 2.5%,
-      rgba(46, 196, 160, 0) 2.5%
+/* ========================================
+   왼쪽 패널 (브랜드 영역)
+   ======================================== */
+
+/** 왼쪽 패널 - 어두운 그라디언트 배경 */
+export const LeftPanel = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 48px 56px;
+  background: linear-gradient(
+    136.6deg,
+    rgb(17, 28, 78) 0%,
+    rgb(15, 24, 35) 100%
+  );
+  position: relative;
+  overflow: hidden;
+
+  /* 그라디언트 오버레이 효과 */
+  &::before {
+    content: "";
+    position: absolute;
+    width: 800px;
+    height: 600px;
+    left: -200px;
+    top: 100px;
+    background: radial-gradient(
+      circle,
+      rgba(20, 200, 165, 0.12) 0%,
+      rgba(20, 200, 165, 0) 45%
     );
-  background-size: 40px 40px;
+    pointer-events: none;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    width: 870px;
+    height: 823px;
+    right: -200px;
+    bottom: -100px;
+    background: radial-gradient(
+      circle,
+      rgba(20, 200, 165, 0.08) 0%,
+      rgba(20, 200, 165, 0) 50%
+    );
+    pointer-events: none;
+  }
 `;
 
-export const LoginCard = styled.div`
+/** 로고 컨테이너 */
+export const LogoContainer = styled.div`
+  display: flex;
+  align-items: center;
   position: relative;
-  width: 420px;
-  padding: 45px 41px;
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
-  box-shadow: 0px 24px 80px 0px rgba(0, 0, 0, 0.4);
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  z-index: 1;
 `;
 
-export const CardHeader = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-`;
-
-export const LogoIconBox = styled.div`
-  width: 56px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, rgb(30, 49, 120) 0%, rgb(17, 28, 78) 100%);
-  border: 1px solid rgba(46, 196, 160, 0.3);
-  border-radius: 16px;
-  box-shadow: 0px 0px 24px 0px rgba(46, 196, 160, 0.15);
-  padding: 1px;
-`;
-
+/** 로고 아이콘 */
 export const LogoIcon = styled.div`
-  width: 28px;
-  height: 28px;
-  color: #2ec4a0;
+  width: 24px;
+  height: 30px;
+  color: #14c8a5;
 
   svg {
     width: 100%;
@@ -71,215 +86,288 @@ export const LogoIcon = styled.div`
   }
 `;
 
-export const TitleContainer = styled.div`
+/** 로고 텍스트 */
+export const LogoText = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 4px;
+  margin-left: 8px;
 `;
 
-export const Title = styled.h1`
-  font-family: "Pretendard", sans-serif;
+/** 로고 상단 텍스트 (Vectra) */
+export const LogoTextTop = styled.span`
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 14px;
   font-weight: 700;
-  font-size: 22px;
-  letter-spacing: -0.3px;
-  margin: 0;
-  padding-bottom: 1px;
-
-  span.white {
-    color: white;
-  }
-
-  span.accent {
-    color: #2ec4a0;
-  }
-`;
-
-export const Subtitle = styled.p`
-  font-family: "Pretendard", sans-serif;
-  font-weight: 400;
-  font-size: 12.5px;
-  letter-spacing: 0.25px;
-  color: rgba(255, 255, 255, 0.4);
-  margin: 0;
-  padding: 1px 0 2px;
-`;
-
-export const FormContainer = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding-top: 20px;
-`;
-
-export const InputGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-`;
-
-/* insystem-atoms 컴포넌트는 이제 직접 스타일 props를 받으므로 wrapper 불필요 */
-
-export const OptionsRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-bottom: 8px;
-`;
-
-export const CheckboxLabel = styled.label`
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  cursor: pointer;
-`;
-
-export const Checkbox = styled.input`
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s;
-
-  &:checked {
-    background: #2ec4a0;
-    border-color: #2ec4a0;
-  }
-
-  &:checked::after {
-    content: "";
-    display: block;
-    width: 10px;
-    height: 8px;
-    margin: 3px auto;
-    background: url("data:image/svg+xml,%3csvg viewBox='0 0 10 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M9 1L3.5 6.5L1 4' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e")
-      no-repeat center;
-  }
-`;
-
-export const CheckboxText = styled.span`
-  font-family: "Pretendard", sans-serif;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.4);
-`;
-
-export const Link = styled.a`
-  font-family: "Pretendard", sans-serif;
-  font-size: 13px;
-  color: #2ec4a0;
-  text-decoration: none;
-  opacity: 0.8;
-  transition: opacity 0.2s;
-
-  &:hover {
-    opacity: 1;
-  }
-`;
-
-export const LoginButton = styled.button<{ $isLoading?: boolean }>`
-  width: 100%;
-  padding: 13px 13px 15px;
-  background: #2ec4a0;
-  border: none;
-  border-radius: 10px;
-  font-family: "Pretendard", sans-serif;
-  font-weight: 700;
-  font-size: 15px;
-  letter-spacing: 0.3px;
+  line-height: 1.2;
   color: white;
-  cursor: pointer;
-  transition: all 0.2s;
+  letter-spacing: 0.5px;
+`;
+
+/** 로고 하단 텍스트 (Secure) */
+export const LogoTextBottom = styled.span`
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #14c8a5;
+  letter-spacing: 0.5px;
+`;
+
+/* ========================================
+   메인 컨텐츠 영역
+   ======================================== */
+
+/** 메인 컨텐츠 컨테이너 */
+export const MainContent = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+  z-index: 1;
+`;
 
-  &:hover:not(:disabled) {
-    background: #26a88a;
-  }
+/** 헤드라인 컨테이너 */
+export const HeadlineContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 
-  &:active:not(:disabled) {
-    transform: scale(0.98);
-  }
+/** 메인 헤드라인 */
+export const Headline = styled.h1`
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.375;
+  letter-spacing: -1.012px;
+  color: white;
+  margin: 0;
 
-  &:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
+  .accent {
+    color: #14c8a5;
   }
 `;
 
-const spin = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/** 설명 텍스트 컨테이너 */
+export const DescriptionContainer = styled.div`
+  max-width: 440px;
 `;
 
-export const Spinner = styled.svg`
-  width: 18px;
-  height: 18px;
-  animation: ${spin} 1s linear infinite;
+/** 설명 텍스트 */
+export const Description = styled.p`
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.467;
+  letter-spacing: 0.144px;
+  color: #989ba2;
+  margin: 0;
 `;
 
-export const Divider = styled.div`
+/* ========================================
+   기능 목록 영역
+   ======================================== */
+
+/** 기능 목록 컨테이너 */
+export const FeatureList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+`;
+
+/** 기능 아이템 */
+export const FeatureItem = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-  padding-top: 8px;
 `;
 
-export const DividerLine = styled.div`
-  flex: 1;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.07);
-`;
-
-export const DividerText = styled.span`
-  font-family: "Pretendard", sans-serif;
-  font-size: 11.5px;
-  color: rgba(255, 255, 255, 0.2);
-  white-space: nowrap;
-  padding: 1px 0 2px;
-`;
-
-export const SecurityChips = styled.div`
+/** 기능 아이콘 박스 */
+export const FeatureIconBox = styled.div`
+  width: 24px;
+  height: 24px;
   display: flex;
-  align-items: stretch;
+  align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding-top: 8px;
+  background: rgba(20, 200, 165, 0.15);
+  border-radius: 6px;
+  flex-shrink: 0;
 `;
 
+/** 기능 아이콘 */
+export const FeatureIcon = styled.div`
+  width: 16px;
+  height: 16px;
+  color: #14c8a5;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+`;
+
+/** 기능 텍스트 */
+export const FeatureText = styled.span`
+  font-family: "Pretendard", sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: -0.14px;
+  color: #989ba2;
+`;
+
+/* ========================================
+   푸터 영역
+   ======================================== */
+
+/** 푸터 컨테이너 */
 export const Footer = styled.div`
+  position: relative;
+  z-index: 1;
+`;
+
+/** 푸터 텍스트 */
+export const FooterText = styled.p`
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.273;
+  letter-spacing: 0.342px;
+  color: rgba(255, 255, 255, 0.35);
+  margin: 0;
+
+  .highlight {
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.55);
+  }
+`;
+
+/* ========================================
+   오른쪽 패널 (로그인 폼 영역)
+   ======================================== */
+
+/** 오른쪽 패널 - 흰색 배경 */
+export const RightPanel = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  padding: 48px;
+`;
+
+/** 폼 컨테이너 */
+export const FormContainer = styled.div`
+  width: 100%;
+  max-width: 485px;
+`;
+
+/** 타이틀 영역 */
+export const TitleSection = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding-top: 11px;
-  padding-bottom: 0.59px;
+  margin-bottom: 32px;
 `;
 
-export const FooterText = styled.p`
-  font-family: "Pretendard", sans-serif;
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.2);
+/** LOGIN 라벨 */
+export const LoginLabel = styled.span`
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.429;
+  letter-spacing: 0.203px;
+  color: #0066ff;
+`;
+
+/** 로그인 제목 */
+export const LoginTitle = styled.h2`
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 1.375;
+  letter-spacing: -0.81px;
+  color: rgba(46, 47, 51, 0.88);
   margin: 0;
-  line-height: 21.6px;
-  text-align: center;
 `;
 
+/** 폼 영역 */
+export const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`;
+
+/** 로그인 버튼 스타일 오버라이드 */
+export const LoginButtonWrapper = styled.div`
+  margin-top: 8px;
+
+  /* IsButton 스타일 오버라이드 */
+  button {
+    background: #0066ff !important;
+    border-radius: 8px !important;
+    padding: 12px 28px !important;
+    height: auto !important;
+    min-height: 44px;
+
+    &:hover:not(:disabled) {
+      background: #0052cc !important;
+    }
+  }
+`;
+
+/* ========================================
+   안내 텍스트 영역
+   ======================================== */
+
+/** 안내 텍스트 컨테이너 */
+export const InfoContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+`;
+
+/** 안내 아이콘 */
+export const InfoIcon = styled.div`
+  width: 16px;
+  height: 16px;
+  color: rgba(55, 56, 60, 0.61);
+  flex-shrink: 0;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+`;
+
+/** 안내 텍스트 */
+export const InfoText = styled.span`
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.385;
+  letter-spacing: 0.252px;
+  color: rgba(55, 56, 60, 0.61);
+
+  .highlight {
+    font-weight: 600;
+    color: #0f1945;
+    text-decoration: underline;
+  }
+`;
+
+/* ========================================
+   에러 메시지
+   ======================================== */
+
+/** 에러 메시지 */
 export const ErrorMessage = styled.div`
-  color: #ff6b6b;
-  border: 1px solid rgba(255, 107, 107, 0.3);
+  color: #dc3545;
+  border: 1px solid rgba(220, 53, 69, 0.3);
   padding: 10px 14px;
   font-size: 13px;
   text-align: center;
   border-radius: 8px;
-  background: rgba(255, 107, 107, 0.1);
+  background: rgba(220, 53, 69, 0.08);
   animation: slideDown 0.3s ease-out;
 
   @keyframes slideDown {
@@ -293,3 +381,7 @@ export const ErrorMessage = styled.div`
     }
   }
 `;
+
+/* ========================================
+   반응형 스타일
+   ======================================== */

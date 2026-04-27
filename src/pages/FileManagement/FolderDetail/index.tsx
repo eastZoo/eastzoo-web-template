@@ -1,17 +1,15 @@
 /**
- * 파일 관리 페이지
- * @description 파일/폴더 업로드, 조회, 수정, 삭제 기능을 제공하는 메인 페이지
+ * 폴더 상세 페이지
+ * @description 선택한 폴더의 파일 목록을 표시하고 관리하는 페이지
  */
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import type { RowDoubleClickedEvent } from "ag-grid-community";
 import type { AgGridReact } from "ag-grid-react";
 import { IsInputSearch, IsSelect, IsFileDrop } from "insystem-atoms";
 import {
   PlusIcon,
   DocumentIcon,
-  DocumentCheckIcon,
-  ClockIcon,
   SearchIcon,
   GridIcon,
   ListIcon,
@@ -19,6 +17,7 @@ import {
   FileUploadIcon,
   FolderUploadIcon,
   FolderCreateIcon,
+  ChevronRightIcon,
   MoveIcon,
   TrashIcon,
 } from "@/styles/icons";
@@ -36,8 +35,8 @@ import {
   type FileItem,
   type FileManagementGridContext,
   useFileManagementColumnDefs,
-} from "./fileManagementGrid";
-import { FileGridView } from "./FileGridView";
+} from "../fileManagementGrid";
+import { FileGridView } from "../FileGridView";
 import {
   PageContainer,
   PageHeader,
@@ -46,8 +45,12 @@ import {
   Content,
   ContentHeader,
   HeaderTextGroup,
-  MainTitle,
   Description,
+  Breadcrumb,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+  BreadcrumbCurrent,
+  BreadcrumbItem,
   UploadButtonWrapper,
   UploadButton,
   UploadMenu,
@@ -55,12 +58,6 @@ import {
   MenuItemIcon,
   MenuItemLabel,
   MenuDivider,
-  StatusCardGrid,
-  StatusCard,
-  CardIconWrap,
-  CardTextGroup,
-  CardNumber,
-  CardLabel,
   TableContainer,
   TableContent,
   PaginationFooter,
@@ -124,254 +121,235 @@ const VECTOR_OPTIONS = [
 ];
 
 /* ========================================
-   샘플 데이터 (API 연동 전 임시)
+   샘플 폴더 데이터 (2~3 depth 테스트용)
    ======================================== */
 
-/** 샘플 파일 목록 */
-const SAMPLE_FILES: FileItem[] = [
-  {
-    id: "1",
-    name: "개발팀 설계/기획 문서",
-    type: "folder",
-    modifiedDate: "2026.04.22",
-    visibility: "private",
-    approvalStatus: "none",
-    vectorStatus: "none",
-    size: "10.19KB",
-  },
-  {
-    id: "2",
-    name: "2024 4분기 프로젝트 보고서.pdf",
-    type: "file",
-    modifiedDate: "2026.04.22",
-    visibility: "team",
-    approvalStatus: "none",
-    vectorStatus: "complete",
-    size: "5.52MB",
-  },
-  {
-    id: "3",
-    name: "시스템 아키텍처 설계서.hwp",
-    type: "file",
-    modifiedDate: "2026.01.23",
-    visibility: "private",
-    approvalStatus: "none",
-    vectorStatus: "complete",
-    size: "1.8MB",
-  },
-  {
-    id: "4",
-    name: "보안 정책 가이드라인 v2.pdf",
-    type: "file",
-    modifiedDate: "2025.12.28",
-    visibility: "pending",
-    approvalStatus: "pending",
-    vectorStatus: "pending",
-    size: "3.2MB",
-  },
-  {
-    id: "5",
-    name: "API 연동 명세서.pdf",
-    type: "file",
-    modifiedDate: "2025.09.02",
-    visibility: "team",
-    approvalStatus: "none",
-    vectorStatus: "complete",
-    size: "2.1MB",
-  },
-  {
-    id: "6",
-    name: "개발 환경 세팅 가이드.docx",
-    type: "file",
-    modifiedDate: "2025.03.16",
-    visibility: "public",
-    approvalStatus: "approved",
-    vectorStatus: "complete",
-    size: "2KB",
-  },
-  {
-    id: "7",
-    name: "마케팅팀 자료",
-    type: "folder",
-    modifiedDate: "2026.04.20",
-    visibility: "team",
-    approvalStatus: "none",
-    vectorStatus: "none",
-    size: "25.4KB",
-  },
-  {
-    id: "8",
-    name: "데이터베이스 ERD 설계서.pdf",
-    type: "file",
-    modifiedDate: "2026.04.18",
-    visibility: "team",
-    approvalStatus: "none",
-    vectorStatus: "complete",
-    size: "4.7MB",
-  },
-  {
-    id: "9",
-    name: "2025년 사업계획서.pptx",
-    type: "file",
-    modifiedDate: "2026.04.15",
-    visibility: "private",
-    approvalStatus: "none",
-    vectorStatus: "pending",
-    size: "12.3MB",
-  },
-  {
-    id: "10",
-    name: "고객사 미팅 회의록.docx",
-    type: "file",
-    modifiedDate: "2026.04.12",
-    visibility: "team",
-    approvalStatus: "none",
-    vectorStatus: "complete",
-    size: "856KB",
-  },
-  {
-    id: "11",
-    name: "인사팀 문서",
-    type: "folder",
-    modifiedDate: "2026.04.10",
-    visibility: "private",
-    approvalStatus: "none",
-    vectorStatus: "none",
-    size: "8.2KB",
-  },
-  {
-    id: "12",
-    name: "서버 운영 매뉴얼.pdf",
-    type: "file",
-    modifiedDate: "2026.04.08",
-    visibility: "team",
-    approvalStatus: "approved",
-    vectorStatus: "complete",
-    size: "6.1MB",
-  },
-  {
-    id: "13",
-    name: "UI/UX 디자인 가이드.pdf",
-    type: "file",
-    modifiedDate: "2026.04.05",
-    visibility: "public",
-    approvalStatus: "approved",
-    vectorStatus: "complete",
-    size: "18.5MB",
-  },
-  {
-    id: "14",
-    name: "보안 점검 체크리스트.xlsx",
-    type: "file",
-    modifiedDate: "2026.04.01",
-    visibility: "private",
-    approvalStatus: "none",
-    vectorStatus: "complete",
-    size: "245KB",
-  },
-  {
-    id: "15",
-    name: "프로젝트 일정표.xlsx",
-    type: "file",
-    modifiedDate: "2026.03.28",
-    visibility: "team",
-    approvalStatus: "none",
-    vectorStatus: "complete",
-    size: "512KB",
-  },
-  {
-    id: "16",
-    name: "재무팀 보고서",
-    type: "folder",
-    modifiedDate: "2026.03.25",
-    visibility: "private",
-    approvalStatus: "none",
-    vectorStatus: "none",
-    size: "15.7KB",
-  },
-  {
-    id: "17",
-    name: "코드 리뷰 가이드라인.md",
-    type: "file",
-    modifiedDate: "2026.03.20",
-    visibility: "public",
-    approvalStatus: "approved",
-    vectorStatus: "complete",
-    size: "28KB",
-  },
-  {
-    id: "18",
-    name: "테스트 케이스 문서.xlsx",
-    type: "file",
-    modifiedDate: "2026.03.15",
-    visibility: "team",
-    approvalStatus: "none",
-    vectorStatus: "pending",
-    size: "1.2MB",
-  },
-  {
-    id: "19",
-    name: "배포 프로세스 문서.pdf",
-    type: "file",
-    modifiedDate: "2026.03.10",
-    visibility: "team",
-    approvalStatus: "none",
-    vectorStatus: "complete",
-    size: "2.8MB",
-  },
-  {
-    id: "20",
-    name: "클라우드 인프라 구성도.png",
-    type: "file",
-    modifiedDate: "2026.03.05",
-    visibility: "private",
-    approvalStatus: "pending",
-    vectorStatus: "pending",
-    size: "4.5MB",
-  },
-  {
-    id: "21",
-    name: "회의록 아카이브",
-    type: "folder",
-    modifiedDate: "2026.03.01",
-    visibility: "team",
-    approvalStatus: "none",
-    vectorStatus: "none",
-    size: "32.1KB",
-  },
-  {
-    id: "22",
-    name: "신규 기능 요구사항.docx",
-    type: "file",
-    modifiedDate: "2026.02.25",
-    visibility: "team",
-    approvalStatus: "none",
-    vectorStatus: "complete",
-    size: "1.5MB",
-  },
-  {
-    id: "23",
-    name: "성능 테스트 결과보고서.pdf",
-    type: "file",
-    modifiedDate: "2026.02.20",
-    visibility: "team",
-    approvalStatus: "approved",
-    vectorStatus: "complete",
-    size: "3.4MB",
-  },
-  {
-    id: "24",
-    name: "외부 API 연동 가이드.pdf",
-    type: "file",
-    modifiedDate: "2026.02.15",
-    visibility: "public",
-    approvalStatus: "approved",
-    vectorStatus: "complete",
-    size: "2.9MB",
-  },
-];
+/** 폴더 정보 타입 */
+interface FolderInfo {
+  name: string;
+  parentId?: string;
+  files: FileItem[];
+}
 
-/** 샘플 폴더 목록 (이동 모달용) */
+/** 샘플 폴더 정보 (실제로는 API에서 가져옴) */
+const SAMPLE_FOLDER_INFO: Record<string, FolderInfo> = {
+  // 1depth: 개발팀 설계/기획 문서
+  "1": {
+    name: "개발팀 설계/기획 문서",
+    files: [
+      {
+        id: "1-1",
+        name: "프로젝트 설계서 v1.0.pdf",
+        type: "file",
+        modifiedDate: "2026.04.20",
+        visibility: "team",
+        approvalStatus: "none",
+        vectorStatus: "complete",
+        size: "2.5MB",
+      },
+      {
+        id: "1-2",
+        name: "기획안 초안.docx",
+        type: "file",
+        modifiedDate: "2026.04.18",
+        visibility: "private",
+        approvalStatus: "none",
+        vectorStatus: "pending",
+        size: "1.2MB",
+      },
+      {
+        id: "1-3",
+        name: "API 명세서.pdf",
+        type: "file",
+        modifiedDate: "2026.04.15",
+        visibility: "team",
+        approvalStatus: "none",
+        vectorStatus: "complete",
+        size: "3.8MB",
+      },
+      {
+        id: "1-4",
+        name: "회의록 아카이브",
+        type: "folder",
+        modifiedDate: "2026.04.10",
+        visibility: "private",
+        approvalStatus: "none",
+        vectorStatus: "none",
+        size: "5.2KB",
+      },
+      {
+        id: "1-5",
+        name: "2024년 프로젝트",
+        type: "folder",
+        modifiedDate: "2026.04.08",
+        visibility: "team",
+        approvalStatus: "none",
+        vectorStatus: "none",
+        size: "12.3KB",
+      },
+    ],
+  },
+  // 2depth: 회의록 아카이브 (1-4의 하위)
+  "1-4": {
+    name: "회의록 아카이브",
+    parentId: "1",
+    files: [
+      {
+        id: "1-4-1",
+        name: "2024년 1분기 회의록.pdf",
+        type: "file",
+        modifiedDate: "2026.03.15",
+        visibility: "team",
+        approvalStatus: "none",
+        vectorStatus: "complete",
+        size: "1.1MB",
+      },
+      {
+        id: "1-4-2",
+        name: "2024년 2분기 회의록.pdf",
+        type: "file",
+        modifiedDate: "2026.03.20",
+        visibility: "team",
+        approvalStatus: "none",
+        vectorStatus: "complete",
+        size: "1.3MB",
+      },
+      {
+        id: "1-4-3",
+        name: "주간 회의록",
+        type: "folder",
+        modifiedDate: "2026.03.10",
+        visibility: "private",
+        approvalStatus: "none",
+        vectorStatus: "none",
+        size: "8.5KB",
+      },
+    ],
+  },
+  // 2depth: 2024년 프로젝트 (1-5의 하위)
+  "1-5": {
+    name: "2024년 프로젝트",
+    parentId: "1",
+    files: [
+      {
+        id: "1-5-1",
+        name: "프로젝트 A 기획서.pdf",
+        type: "file",
+        modifiedDate: "2026.02.28",
+        visibility: "team",
+        approvalStatus: "approved",
+        vectorStatus: "complete",
+        size: "4.2MB",
+      },
+      {
+        id: "1-5-2",
+        name: "프로젝트 B 자료",
+        type: "folder",
+        modifiedDate: "2026.02.20",
+        visibility: "team",
+        approvalStatus: "none",
+        vectorStatus: "none",
+        size: "15.7KB",
+      },
+      {
+        id: "1-5-3",
+        name: "예산 계획서.xlsx",
+        type: "file",
+        modifiedDate: "2026.02.15",
+        visibility: "private",
+        approvalStatus: "none",
+        vectorStatus: "pending",
+        size: "856KB",
+      },
+    ],
+  },
+  // 3depth: 주간 회의록 (1-4-3의 하위)
+  "1-4-3": {
+    name: "주간 회의록",
+    parentId: "1-4",
+    files: [
+      {
+        id: "1-4-3-1",
+        name: "1주차 회의록.docx",
+        type: "file",
+        modifiedDate: "2026.01.08",
+        visibility: "team",
+        approvalStatus: "none",
+        vectorStatus: "complete",
+        size: "245KB",
+      },
+      {
+        id: "1-4-3-2",
+        name: "2주차 회의록.docx",
+        type: "file",
+        modifiedDate: "2026.01.15",
+        visibility: "team",
+        approvalStatus: "none",
+        vectorStatus: "complete",
+        size: "312KB",
+      },
+      {
+        id: "1-4-3-3",
+        name: "3주차 회의록.docx",
+        type: "file",
+        modifiedDate: "2026.01.22",
+        visibility: "team",
+        approvalStatus: "none",
+        vectorStatus: "complete",
+        size: "289KB",
+      },
+      {
+        id: "1-4-3-4",
+        name: "4주차 회의록.docx",
+        type: "file",
+        modifiedDate: "2026.01.29",
+        visibility: "team",
+        approvalStatus: "pending",
+        vectorStatus: "pending",
+        size: "356KB",
+      },
+    ],
+  },
+  // 3depth: 프로젝트 B 자료 (1-5-2의 하위)
+  "1-5-2": {
+    name: "프로젝트 B 자료",
+    parentId: "1-5",
+    files: [
+      {
+        id: "1-5-2-1",
+        name: "요구사항 정의서.pdf",
+        type: "file",
+        modifiedDate: "2026.02.10",
+        visibility: "team",
+        approvalStatus: "none",
+        vectorStatus: "complete",
+        size: "2.8MB",
+      },
+      {
+        id: "1-5-2-2",
+        name: "화면설계서.pdf",
+        type: "file",
+        modifiedDate: "2026.02.12",
+        visibility: "team",
+        approvalStatus: "none",
+        vectorStatus: "complete",
+        size: "5.4MB",
+      },
+      {
+        id: "1-5-2-3",
+        name: "DB 설계서.pdf",
+        type: "file",
+        modifiedDate: "2026.02.14",
+        visibility: "private",
+        approvalStatus: "none",
+        vectorStatus: "pending",
+        size: "1.9MB",
+      },
+    ],
+  },
+};
+
+/** 이동 모달용 샘플 폴더 목록 */
 const SAMPLE_FOLDERS: FolderItem[] = [
   { id: "folder-1", name: "개발팀 설계/기획 문서" },
   { id: "folder-2", name: "마케팅팀 자료" },
@@ -382,83 +360,112 @@ const SAMPLE_FOLDERS: FolderItem[] = [
 ];
 
 /* ========================================
-   컴포넌트
+   메인 컴포넌트
    ======================================== */
 
 /**
- * 파일 관리 페이지 컴포넌트
+ * 폴더 상세 페이지 컴포넌트
+ * @returns 폴더 상세 페이지 JSX
  */
-export default function FileManagementPage() {
+export default function FolderDetailPage() {
+  const { folderId } = useParams<{ folderId: string }>();
   const navigate = useNavigate();
 
-  /* ===== 상태 관리 ===== */
+  /* ----------------------------------------
+     상태 관리
+     ---------------------------------------- */
 
-  // 검색 및 필터 상태
+  /** 검색 키워드 */
   const [searchKeyword, setSearchKeyword] = useState("");
+  /** 파일 유형 필터 */
   const [fileType, setFileType] = useState("");
+  /** 날짜 필터 */
   const [dateFilter, setDateFilter] = useState("");
+  /** 공개 범위 필터 */
   const [scopeFilter, setScopeFilter] = useState("");
+  /** 벡터화 상태 필터 */
   const [vectorFilter, setVectorFilter] = useState("");
+  /** 보기 모드 (그리드/리스트) - localStorage에서 복원 */
   const [viewMode, setViewMode] = useState<"grid" | "list">(() => {
     const saved = localStorage.getItem("fileManagement_viewMode");
     return saved === "grid" ? "grid" : "list";
   });
-
-  // 업로드 메뉴 및 모달 상태
+  /** 업로드 메뉴 표시 여부 */
   const [showUploadMenu, setShowUploadMenu] = useState(false);
+  /** 업로드 모달 표시 여부 */
   const [showUploadModal, setShowUploadModal] = useState(false);
+  /** 업로드 모달 타입 (파일/폴더) */
   const [uploadModalType, setUploadModalType] = useState<"file" | "folder">(
     "file"
   );
+  /** 폴더 생성 모달 표시 여부 */
   const [showCreateFolderModal, setShowCreateFolderModal] = useState(false);
-
-  // 수정 모달 상태
+  /** 파일 수정 모달 표시 여부 */
   const [showEditModal, setShowEditModal] = useState(false);
+  /** 수정 중인 파일 */
   const [editingFile, setEditingFile] = useState<FileItem | null>(null);
-
-  // 이동 모달 상태
+  /** 파일 이동 모달 표시 여부 */
   const [showMoveModal, setShowMoveModal] = useState(false);
+  /** 이동 중인 파일 */
   const [movingFile, setMovingFile] = useState<FileItem | null>(null);
-
-  // 삭제 확인 알림 상태
+  /** 휴지통 이동 대기 중인 파일 */
   const [filePendingTrash, setFilePendingTrash] = useState<FileItem | null>(
     null
   );
+  /** 선택된 파일 목록 */
+  const [selectedFiles, setSelectedFiles] = useState<FileItem[]>([]);
 
-  // 공개 범위 변경 모달 상태
+  /** 공개 범위 변경 모달 상태 */
   const [showVisibilityModal, setShowVisibilityModal] = useState(false);
   const [pendingVisibility, setPendingVisibility] = useState<
     "public" | "team" | "private" | null
   >(null);
 
-  // 페이지네이션 상태
+  /** 페이지네이션 상태 */
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
 
-  // 선택된 파일 상태
-  const [selectedFiles, setSelectedFiles] = useState<FileItem[]>([]);
-
-  // DOM 참조
+  /** 업로드 메뉴 참조 */
   const uploadMenuRef = useRef<HTMLDivElement>(null);
+  /** 업로드 버튼 참조 */
   const uploadButtonRef = useRef<HTMLDivElement>(null);
+  /** AG-Grid 참조 */
   const gridRef = useRef<AgGridReact>(null);
 
-  /* ===== 데이터 ===== */
-
+  /** 그리드 컬럼 정의 */
   const columnDefs = useFileManagementColumnDefs();
-  const [files] = useState<FileItem[]>(SAMPLE_FILES);
-  const folders = useMemo<FolderItem[]>(() => SAMPLE_FOLDERS, []);
 
-  /** 통계 데이터 */
-  const stats = useMemo(
-    () => ({
-      totalFiles: files.length > 0 ? 24 : 0,
-      myFiles: files.length > 0 ? 21 : 0,
-      pendingApproval:
-        files.filter((f) => f.visibility === "pending").length || 2,
-    }),
-    [files]
-  );
+  /* ----------------------------------------
+     폴더 정보 및 브레드크럼
+     ---------------------------------------- */
+
+  /** 현재 폴더 정보 */
+  const folderInfo = folderId ? SAMPLE_FOLDER_INFO[folderId] : null;
+  /** 폴더 이름 */
+  const folderName = folderInfo?.name || "알 수 없는 폴더";
+  /** 폴더 내 파일 목록 */
+  const files = folderInfo?.files || [];
+
+  /**
+   * 브레드크럼 경로 생성
+   * @description 상위 폴더를 추적하여 전체 경로를 생성
+   */
+  const breadcrumbPath = useMemo(() => {
+    const path: { id: string; name: string }[] = [];
+    let currentId = folderId;
+
+    while (currentId) {
+      const info = SAMPLE_FOLDER_INFO[currentId];
+      if (info) {
+        path.unshift({ id: currentId, name: info.name });
+        currentId = info.parentId;
+      } else {
+        break;
+      }
+    }
+
+    return path;
+  }, [folderId]);
 
   /** 페이지네이션된 파일 목록 */
   const paginatedFiles = useMemo(() => {
@@ -471,107 +478,136 @@ export default function FileManagementPage() {
     setCurrentPage(page);
   }, []);
 
-  /* ===== 업로드 메뉴 핸들러 ===== */
+  /* ----------------------------------------
+     업로드 메뉴 핸들러
+     ---------------------------------------- */
 
-  /** 업로드 버튼 클릭 - 메뉴 토글 */
+  /** 업로드 버튼 클릭 핸들러 */
   const handleUploadClick = useCallback(() => {
     setShowUploadMenu((prev) => !prev);
   }, []);
 
-  /** 파일 업로드 메뉴 클릭 */
+  /** 파일 업로드 메뉴 클릭 핸들러 */
   const handleFileUpload = useCallback(() => {
     setShowUploadMenu(false);
     setUploadModalType("file");
     setShowUploadModal(true);
   }, []);
 
-  /** 폴더 업로드 메뉴 클릭 */
+  /** 폴더 업로드 메뉴 클릭 핸들러 */
   const handleFolderUpload = useCallback(() => {
     setShowUploadMenu(false);
     setUploadModalType("folder");
     setShowUploadModal(true);
   }, []);
 
-  /** 폴더 생성 메뉴 클릭 */
+  /** 폴더 생성 메뉴 클릭 핸들러 */
   const handleCreateFolder = useCallback(() => {
     setShowUploadMenu(false);
     setShowCreateFolderModal(true);
   }, []);
 
-  /* ===== 모달 제출 핸들러 ===== */
+  /* ----------------------------------------
+     모달 제출 핸들러
+     ---------------------------------------- */
 
-  /** 업로드 모달 제출 */
+  /**
+   * 업로드 제출 핸들러
+   * @param files 업로드할 파일 목록
+   * @param visibility 공개 범위
+   */
   const handleUploadSubmit = useCallback(
-    (uploadedFiles: File[], visibility: string) => {
+    (files: File[], visibility: string) => {
       console.log("업로드 제출:", {
-        uploadedFiles,
+        files,
         visibility,
         type: uploadModalType,
+        folderId,
       });
-      // TODO: 업로드 API 연동
+      // TODO: API 연동 로직 추가
     },
-    [uploadModalType]
+    [uploadModalType, folderId]
   );
 
-  /** 폴더 생성 모달 제출 */
-  const handleCreateFolderSubmit = useCallback((folderName: string) => {
-    console.log("폴더 생성:", folderName);
-    // TODO: 폴더 생성 API 연동
-  }, []);
+  /**
+   * 폴더 생성 제출 핸들러
+   * @param folderName 생성할 폴더 이름
+   */
+  const handleCreateFolderSubmit = useCallback(
+    (folderName: string) => {
+      console.log("폴더 생성:", folderName, "위치:", folderId);
+      // TODO: API 연동 로직 추가
+    },
+    [folderId]
+  );
 
-  /** 파일 수정 저장 */
+  /**
+   * 파일 수정 저장 핸들러
+   * @param fileName 파일 이름
+   * @param visibility 공개 범위
+   */
   const handleEditSave = useCallback(
     (fileName: string, visibility: "private" | "team" | "public") => {
       console.log("수정 저장:", { fileName, visibility, file: editingFile });
-      // TODO: 파일 수정 API 연동
+      // TODO: API 연동 로직 추가
     },
     [editingFile]
   );
 
-  /** 승인 요청 취소 */
+  /** 승인 요청 취소 핸들러 */
   const handleCancelApproval = useCallback(() => {
     console.log("승인 요청 취소:", editingFile);
-    // TODO: 승인 취소 API 연동
+    // TODO: 승인 요청 취소 API 연동 로직 추가
   }, [editingFile]);
 
-  /** 파일 이동 제출 */
+  /**
+   * 파일 이동 제출 핸들러
+   * @param targetFolderId 이동할 대상 폴더 ID
+   */
   const handleMoveSubmit = useCallback(
     (targetFolderId: string) => {
       console.log("파일 이동:", { file: movingFile, targetFolderId });
-      // TODO: 파일 이동 API 연동
+      // TODO: 파일 이동 API 연동 로직 추가
     },
     [movingFile]
   );
 
-  /** 휴지통 이동 확인 */
-  const handleTrashMoveConfirm = useCallback(() => {
-    if (filePendingTrash) {
-      console.log("휴지통으로 이동:", filePendingTrash);
-      // TODO: 휴지통 이동 API 연동
-    }
-    setFilePendingTrash(null);
-  }, [filePendingTrash]);
+  /* ----------------------------------------
+     그리드 액션 핸들러
+     ---------------------------------------- */
 
-  /* ===== 그리드 액션 핸들러 ===== */
-
-  /** 파일 수정 클릭 */
+  /**
+   * 파일 수정 핸들러
+   * @param file 수정할 파일
+   */
   const handleFileEdit = useCallback((file: FileItem) => {
+    console.log("파일 수정:", file);
     setEditingFile(file);
     setShowEditModal(true);
   }, []);
 
-  /** 파일 이동 클릭 */
+  /**
+   * 파일 이동 핸들러
+   * @param file 이동할 파일
+   */
   const handleFileMove = useCallback((file: FileItem) => {
+    console.log("파일 이동:", file);
     setMovingFile(file);
     setShowMoveModal(true);
   }, []);
 
-  /** 파일 삭제 클릭 */
+  /**
+   * 파일 삭제 핸들러
+   * @param file 삭제할 파일
+   */
   const handleFileDelete = useCallback((file: FileItem) => {
     setFilePendingTrash(file);
   }, []);
 
-  /** 폴더 클릭 - 폴더 상세 페이지로 이동 */
+  /**
+   * 폴더 클릭 핸들러
+   * @param file 클릭한 파일/폴더
+   */
   const handleFolderClick = useCallback(
     (file: FileItem) => {
       if (file.type === "folder") {
@@ -581,32 +617,63 @@ export default function FileManagementPage() {
     [navigate]
   );
 
-  /** 행 더블클릭 - 폴더인 경우 상세 페이지로 이동 */
-  const handleRowDoubleClicked = useCallback(
-    (event: RowDoubleClickedEvent<FileItem>) => {
-      const file = event.data;
-      if (file?.type === "folder") {
-        handleFolderClick(file);
-      }
-    },
-    [handleFolderClick]
-  );
+  /* ----------------------------------------
+     휴지통 Alert 핸들러
+     ---------------------------------------- */
 
-  /** 체크박스 선택 변경 */
-  /** 체크박스 선택 변경 */
+  /** 휴지통 Alert 닫기 핸들러 */
+  const handleTrashAlertClose = useCallback(() => {
+    setFilePendingTrash(null);
+  }, []);
+
+  /** 휴지통 이동 확인 핸들러 */
+  const handleTrashMoveConfirm = useCallback(() => {
+    if (filePendingTrash) {
+      console.log("휴지통으로 이동:", filePendingTrash);
+      // TODO: 휴지통 이동 API 연동
+    }
+    setFilePendingTrash(null);
+  }, [filePendingTrash]);
+
+  /* ----------------------------------------
+     파일 드롭 핸들러
+     ---------------------------------------- */
+
+  /**
+   * 파일 변경 핸들러
+   * @param newFiles 선택된 파일 목록
+   */
+  const handleFileChange = useCallback((newFiles: File[]) => {
+    console.log("파일 선택:", newFiles);
+  }, []);
+
+  /** 파일 제거 핸들러 */
+  const handleFileRemove = useCallback(() => {
+    console.log("파일 제거");
+  }, []);
+
+  /* ----------------------------------------
+     그리드 이벤트 핸들러
+     ---------------------------------------- */
+
+  /**
+   * 체크박스 선택 변경 핸들러
+   * @param event AG-Grid 선택 변경 이벤트
+   */
   const handleSelectionChanged = useCallback((event: any) => {
     const selectedRows = event.api.getSelectedRows() as FileItem[];
     setSelectedFiles(selectedRows);
+    console.log("선택된 항목:", selectedRows);
   }, []);
 
-  /** 선택 해제 */
+  /** 선택 해제 핸들러 */
   const handleClearSelection = useCallback(() => {
     // AG-Grid API를 통해 선택 상태 초기화
     gridRef.current?.api?.deselectAll();
     setSelectedFiles([]);
   }, []);
 
-  /** 선택된 파일 일괄 이동 */
+  /** 일괄 이동 핸들러 */
   const handleBulkMove = useCallback(() => {
     if (selectedFiles.length > 0) {
       setMovingFile(selectedFiles[0]);
@@ -614,7 +681,7 @@ export default function FileManagementPage() {
     }
   }, [selectedFiles]);
 
-  /** 선택된 파일 일괄 삭제 */
+  /** 일괄 삭제 핸들러 */
   const handleBulkDelete = useCallback(() => {
     if (selectedFiles.length > 0) {
       setFilePendingTrash(selectedFiles[0]);
@@ -682,7 +749,22 @@ export default function FileManagementPage() {
     []
   );
 
-  /** 그리드 컨텍스트 (액션 핸들러 전달) */
+  /**
+   * 행 더블클릭 핸들러
+   * @description 폴더인 경우 해당 폴더로 이동
+   * @param event AG-Grid 행 더블클릭 이벤트
+   */
+  const handleRowDoubleClicked = useCallback(
+    (event: RowDoubleClickedEvent<FileItem>) => {
+      const file = event.data;
+      if (file?.type === "folder") {
+        handleFolderClick(file);
+      }
+    },
+    [handleFolderClick]
+  );
+
+  /** 그리드 컨텍스트 (액션 핸들러 전달용) */
   const gridContext = useMemo<FileManagementGridContext>(
     () => ({
       onEdit: handleFileEdit,
@@ -693,54 +775,27 @@ export default function FileManagementPage() {
     [handleFileEdit, handleFileMove, handleFileDelete, handleFolderClick]
   );
 
-  /* ===== 드래그 앤 드롭 핸들러 ===== */
-
-  /** 파일 선택 */
-  const handleFileChange = useCallback((newFiles: File[]) => {
-    console.log("파일 선택:", newFiles);
-  }, []);
-
-  /** 파일 제거 */
-  const handleFileRemove = useCallback(() => {
-    console.log("파일 제거");
-  }, []);
-
-  /* ===== 모달 닫기 핸들러 ===== */
-
-  /** 수정 모달 닫기 */
-  const handleEditModalClose = useCallback(() => {
-    setShowEditModal(false);
-    setEditingFile(null);
-  }, []);
-
-  /** 이동 모달 닫기 */
-  const handleMoveModalClose = useCallback(() => {
-    setShowMoveModal(false);
-    setMovingFile(null);
-  }, []);
-
-  /** 삭제 확인 알림 닫기 */
-  const handleTrashAlertClose = useCallback(() => {
-    setFilePendingTrash(null);
-  }, []);
-
-  /* ===== 사이드 이펙트 ===== */
+  /* ----------------------------------------
+     사이드 이펙트
+     ---------------------------------------- */
 
   /** 뷰 모드 변경 시 localStorage에 저장 */
   useEffect(() => {
     localStorage.setItem("fileManagement_viewMode", viewMode);
   }, [viewMode]);
 
-  /** 업로드 메뉴 외부 클릭 시 닫기 */
+  /**
+   * 업로드 메뉴 외부 클릭 감지
+   * @description 메뉴 외부 클릭 시 메뉴 닫기
+   */
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Node;
-      const isOutsideMenu =
-        uploadMenuRef.current && !uploadMenuRef.current.contains(target);
-      const isOutsideButton =
-        uploadButtonRef.current && !uploadButtonRef.current.contains(target);
-
-      if (isOutsideMenu && isOutsideButton) {
+      if (
+        uploadMenuRef.current &&
+        !uploadMenuRef.current.contains(event.target as Node) &&
+        uploadButtonRef.current &&
+        !uploadButtonRef.current.contains(event.target as Node)
+      ) {
         setShowUploadMenu(false);
       }
     };
@@ -749,7 +804,14 @@ export default function FileManagementPage() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  /* ===== 렌더링 ===== */
+  /** 폴더 변경 시 페이지 리셋 */
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [folderId]);
+
+  /* ========================================
+     렌더링
+     ======================================== */
 
   return (
     <PageContainer>
@@ -764,7 +826,24 @@ export default function FileManagementPage() {
           {/* 컨텐츠 헤더 */}
           <ContentHeader>
             <HeaderTextGroup>
-              <MainTitle>내 파일</MainTitle>
+              {/* 브레드크럼 네비게이션 */}
+              <Breadcrumb>
+                <BreadcrumbLink to="/file-management">내 파일</BreadcrumbLink>
+                {breadcrumbPath.map((item, index) => (
+                  <BreadcrumbItem key={item.id}>
+                    <BreadcrumbSeparator>
+                      <ChevronRightIcon />
+                    </BreadcrumbSeparator>
+                    {index === breadcrumbPath.length - 1 ? (
+                      <BreadcrumbCurrent>{item.name}</BreadcrumbCurrent>
+                    ) : (
+                      <BreadcrumbLink to={`/file-management/folder/${item.id}`}>
+                        {item.name}
+                      </BreadcrumbLink>
+                    )}
+                  </BreadcrumbItem>
+                ))}
+              </Breadcrumb>
               <Description>
                 업로드한 문서를 관리하고 벡터화 상태를 확인하세요.
               </Description>
@@ -808,44 +887,12 @@ export default function FileManagementPage() {
             </UploadButtonWrapper>
           </ContentHeader>
 
-          {/* 상태 카드 */}
-          <StatusCardGrid>
-            <StatusCard>
-              <CardIconWrap $color="cyan">
-                <DocumentIcon />
-              </CardIconWrap>
-              <CardTextGroup>
-                <CardNumber>{stats.totalFiles}</CardNumber>
-                <CardLabel>전체 파일</CardLabel>
-              </CardTextGroup>
-            </StatusCard>
-
-            <StatusCard>
-              <CardIconWrap $color="gray">
-                <DocumentCheckIcon />
-              </CardIconWrap>
-              <CardTextGroup>
-                <CardNumber>{stats.myFiles}</CardNumber>
-                <CardLabel>내가 올린 파일</CardLabel>
-              </CardTextGroup>
-            </StatusCard>
-
-            <StatusCard>
-              <CardIconWrap $color="orange">
-                <ClockIcon />
-              </CardIconWrap>
-              <CardTextGroup>
-                <CardNumber>{stats.pendingApproval}</CardNumber>
-                <CardLabel>승인 대기</CardLabel>
-              </CardTextGroup>
-            </StatusCard>
-          </StatusCardGrid>
-
           {/* 테이블 컨테이너 */}
           <TableContainer>
             {/* 검색 바 */}
             <SearchBar>
               <SearchLeft>
+                {/* 검색 입력 */}
                 <SearchInputWrapper>
                   <IsInputSearch
                     size="sm"
@@ -860,6 +907,7 @@ export default function FileManagementPage() {
                     fullWidth
                   />
                 </SearchInputWrapper>
+                {/* 파일 유형 필터 */}
                 <SelectWrapper>
                   <IsSelect
                     size="small"
@@ -870,6 +918,7 @@ export default function FileManagementPage() {
                     fullWidth
                   />
                 </SelectWrapper>
+                {/* 날짜 필터 */}
                 <SelectWrapper>
                   <IsSelect
                     size="small"
@@ -880,6 +929,7 @@ export default function FileManagementPage() {
                     fullWidth
                   />
                 </SelectWrapper>
+                {/* 공개 범위 필터 */}
                 <SelectWrapper>
                   <IsSelect
                     size="small"
@@ -890,6 +940,7 @@ export default function FileManagementPage() {
                     fullWidth
                   />
                 </SelectWrapper>
+                {/* 벡터화 상태 필터 */}
                 <SelectWrapper>
                   <IsSelect
                     size="small"
@@ -901,6 +952,8 @@ export default function FileManagementPage() {
                   />
                 </SelectWrapper>
               </SearchLeft>
+
+              {/* 뷰 모드 토글 */}
               <SearchRight>
                 <ViewToggle>
                   <ViewButton
@@ -923,9 +976,10 @@ export default function FileManagementPage() {
               </SearchRight>
             </SearchBar>
 
-            {/* 선택 액션 바 (리스트 뷰에서 항목 선택 시 표시) */}
+            {/* 선택 액션 바 (리스트 뷰에서 1개 이상 선택 시 표시) */}
             {viewMode === "list" && selectedFiles.length > 0 && (
               <SelectionActionBar>
+                {/* 공개 범위 변경 */}
                 <VisibilitySelectWrapper>
                   <IsSelect
                     size="small"
@@ -941,6 +995,8 @@ export default function FileManagementPage() {
                     fullWidth
                   />
                 </VisibilitySelectWrapper>
+
+                {/* 선택 개수 */}
                 <ActionBarItem $hasBorder>
                   <SelectionCount>
                     <SelectionCountNumber>
@@ -949,17 +1005,23 @@ export default function FileManagementPage() {
                     <SelectionCountText>선택됨</SelectionCountText>
                   </SelectionCount>
                 </ActionBarItem>
+
+                {/* 선택 해제 */}
                 <ActionBarItem $hasBorder>
                   <ActionButton onClick={handleClearSelection}>
                     선택해제
                   </ActionButton>
                 </ActionBarItem>
+
+                {/* 이동 */}
                 <ActionBarItem $hasBorder>
                   <ActionButton onClick={handleBulkMove}>
                     <MoveIcon />
                     이동
                   </ActionButton>
                 </ActionBarItem>
+
+                {/* 삭제 */}
                 <ActionBarItem>
                   <ActionButton onClick={handleBulkDelete}>
                     <TrashIcon />
@@ -969,7 +1031,7 @@ export default function FileManagementPage() {
               </SelectionActionBar>
             )}
 
-            {/* 파일 그리드 또는 드래그 앤 드롭 영역 */}
+            {/* 파일 그리드 또는 드래그 드롭 영역 */}
             <TableContent>
               {files.length > 0 ? (
                 viewMode === "grid" ? (
@@ -1030,7 +1092,7 @@ export default function FileManagementPage() {
         </Content>
       </MainContainer>
 
-      {/* 모달 컴포넌트들 */}
+      {/* 업로드 모달 */}
       <UploadModal
         isOpen={showUploadModal}
         onClose={() => setShowUploadModal(false)}
@@ -1038,15 +1100,20 @@ export default function FileManagementPage() {
         type={uploadModalType}
       />
 
+      {/* 폴더 생성 모달 */}
       <CreateFolderModal
         isOpen={showCreateFolderModal}
         onClose={() => setShowCreateFolderModal(false)}
         onCreate={handleCreateFolderSubmit}
       />
 
+      {/* 파일 수정 모달 */}
       <EditFileModal
         isOpen={showEditModal}
-        onClose={handleEditModalClose}
+        onClose={() => {
+          setShowEditModal(false);
+          setEditingFile(null);
+        }}
         onSave={handleEditSave}
         onCancelApproval={handleCancelApproval}
         file={
@@ -1064,14 +1131,19 @@ export default function FileManagementPage() {
         }
       />
 
+      {/* 파일 이동 모달 */}
       <MoveFileModal
         isOpen={showMoveModal}
-        onClose={handleMoveModalClose}
+        onClose={() => {
+          setShowMoveModal(false);
+          setMovingFile(null);
+        }}
         onMove={handleMoveSubmit}
         fileName={movingFile?.name}
-        folders={folders}
+        folders={SAMPLE_FOLDERS}
       />
 
+      {/* 휴지통 이동 확인 Alert */}
       <Alert
         isOpen={filePendingTrash !== null}
         onClose={handleTrashAlertClose}

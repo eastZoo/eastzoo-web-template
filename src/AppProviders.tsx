@@ -47,6 +47,9 @@ import AppRoutes from "@/lib/core/routes/Routes";
 import { writeAccessToken } from "@/lib/functions/authFunctions";
 import type { ApiResponse } from "@/types/api";
 import { ToastProvider } from "./components/containers/Toast";
+import { AppLoading } from "@/components/atoms/AppLoading";
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-quartz.css";
 
 /**
  * 앱 마운트 시 Refresh Token Cookie로 Access Token을 복원하는 컴포넌트.
@@ -88,11 +91,7 @@ function AuthRestorer({ children }: { children: React.ReactNode }) {
 
   // 복원 중에도 최소 UI를 두어 #root 가 비지 않게 함 (흰 화면 방지)
   if (isRestoring) {
-    return (
-      <div style={{ padding: 24, fontFamily: "system-ui, sans-serif" }}>
-        세션 확인 중…
-      </div>
-    );
+    return <AppLoading />;
   }
 
   return <>{children}</>;

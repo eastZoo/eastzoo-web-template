@@ -1,8 +1,6 @@
 import { createRoot } from "react-dom/client";
 import { configureTokens } from "insystem-atoms";
 import AppProviders from "./AppProviders.tsx";
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-quartz.css";
 
 // theme.ts에서 토큰 가져오기 (단일 소스)
 import { insystemAtomsTokens } from "./styles/theme";

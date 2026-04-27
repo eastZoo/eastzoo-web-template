@@ -83,30 +83,36 @@ export const ROUTE_CONFIGS: RouteConfig[] = [
     protected: true,
   },
   {
+    path: "/file-management/folder/:folderId",
+    page: "FileManagement/FolderDetail",
+    title: "폴더 상세",
+    protected: true,
+  },
+  {
     path: "/chat",
     name: "Chat",
     title: "채팅",
     protected: true,
   },
 
-  {
-    path: "/sample",
-    name: "SamplePage1",
-    title: "1.샘플 메뉴",
-    protected: true,
-  },
-  {
-    path: "/sample/1-1",
-    page: "SamplePage1/SamplePage1Sub1",
-    title: "1-1.샘플페이지",
-    protected: true,
-  },
-  {
-    path: "/sample/1-2",
-    page: "SamplePage1/SamplePage1Sub2",
-    title: "1-2.샘플페이지",
-    protected: true,
-  },
+  // {
+  //   path: "/sample",
+  //   name: "SamplePage1",
+  //   title: "1.샘플 메뉴",
+  //   protected: true,
+  // },
+  // {
+  //   path: "/sample/1-1",
+  //   page: "SamplePage1/SamplePage1Sub1",
+  //   title: "1-1.샘플페이지",
+  //   protected: true,
+  // },
+  // {
+  //   path: "/sample/1-2",
+  //   page: "SamplePage1/SamplePage1Sub2",
+  //   title: "1-2.샘플페이지",
+  //   protected: true,
+  // },
 
   // ── 시스템 ──────────────────────────────────────────────────
   {

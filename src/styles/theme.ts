@@ -8,8 +8,8 @@ export const figmaTokens = {
   semantic: {
     primary: {
       normal: "#2ec4a0", // Figma: --primary/normal (파란색)
-      strong: "#0052CC",
-      heavy: "#003D99",
+      strong: "#2ec4a0",
+      heavy: "#2ec4a0",
     },
     accent: {
       normal: "#2ec4a0", // Figma: --color/cyan/47 (민트/샴록)

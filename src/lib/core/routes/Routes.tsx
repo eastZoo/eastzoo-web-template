@@ -12,6 +12,7 @@ import {
   type RouteConfig,
 } from "@/lib/core/routes/routes.config";
 import ProtectedLayout from "../ProtectedLayout";
+import { AppLoading } from "@/components/atoms/AppLoading";
 
 /**
  * Vite import.meta.glob — 패턴은 반드시 문자열 리터럴(빌드 타임 수집).
@@ -121,5 +122,5 @@ export default function AppRoutes() {
 
   const element = useRoutes(routes);
 
-  return <Suspense fallback={<div style={{ padding: 24 }}>로딩중…</div>}>{element}</Suspense>;
+  return <Suspense fallback={<AppLoading />}>{element}</Suspense>;
 }

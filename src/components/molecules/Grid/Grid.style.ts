@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const GridBox = styled.div<{ $isRadius?: boolean }>`
   overflow: auto;
@@ -9,7 +9,7 @@ export const GridBox = styled.div<{ $isRadius?: boolean }>`
   flex-direction: column;
   gap: 16px;
   flex-grow: 1;
-  border-radius: ${({ $isRadius }) => ($isRadius === true ? '10px' : '0px')};
+  border-radius: ${({ $isRadius }) => ($isRadius === true ? "10px" : "0px")};
 
   .ag-theme-quartz {
     width: 100%;
@@ -17,14 +17,34 @@ export const GridBox = styled.div<{ $isRadius?: boolean }>`
     height: calc(100% - 48px);
     min-height: 100px;
 
-    --ag-row-height: 64px;
-    --ag-header-height: 44px;
+    /* ===== Figma 91-2963 디자인 시스템 기반 테마 변수 ===== */
+    --ag-font-family: "Pretendard Variable", "Pretendard", sans-serif;
+    --ag-font-size: 12px;
+    --ag-row-height: 40px;
+    --ag-header-height: 40px;
+    --ag-background-color: #ffffff;
+    --ag-foreground-color: rgba(46, 47, 51, 0.88);
+    --ag-header-foreground-color: rgba(46, 47, 51, 0.88);
+    --ag-header-background-color: #f7f7f8;
+    --ag-odd-row-background-color: #ffffff;
+    --ag-border-color: rgba(112, 115, 124, 0.08);
+    --ag-row-border-color: rgba(112, 115, 124, 0.08);
+    --ag-row-hover-color: rgba(112, 115, 124, 0.05);
+    --ag-selected-row-background-color: rgba(112, 115, 124, 0.05);
+    --ag-cell-horizontal-padding: 12px;
+    --ag-checkbox-checked-color: #0066ff;
+    --ag-checkbox-unchecked-color: rgba(112, 115, 124, 0.22);
+    --ag-checkbox-border-radius: 4px;
+
+    /* 체크박스 컬럼 스타일 */
+    --ag-checkbox-background-color: transparent;
+    --ag-icon-size: 16px;
 
     .ag-overlay-panel {
       padding-top: 40px;
     }
 
-    // 추가
+    /* 추가 */
     .ag-header-container,
     .ag-body-viewport {
       min-width: 100% !important;
@@ -46,36 +66,35 @@ export const GridWrapper = styled.div<{
   $groupHeaderHeight?: number;
 }>`
   height: 100%;
+
   .ag-root-wrapper {
     border: none;
 
-    // GRID 헤더 배경색/높이 변경
+    /* ===== 헤더 영역 (Figma: IsGridHeader) ===== */
     .ag-header {
-      background: #ddd;
+      background: #f7f7f8;
       border: none;
+      border-top: 1px solid rgba(112, 115, 124, 0.08);
+      border-bottom: 1px solid rgba(112, 115, 124, 0.08);
 
       .ag-header-row {
         .ag-header-cell {
           padding: 0 12px;
-          border-right: 1px solid #fff;
-          background-color: #ddd;
-
-          &:last-child {
-            border-right: none;
-          }
+          border-right: none;
+          background-color: #f7f7f8;
 
           &.custom-header-bg {
-            background-color: #eee !important; // 특정 헤더 배경
+            background-color: #f7f7f8 !important;
           }
 
           &.custom-column-bg {
-            background-color: #f7f7f7 !important; // 특정 컬럼 배경
+            background-color: #f7f7f8 !important;
           }
 
           .ag-header-cell-resize {
             &::after {
               width: 1px;
-              background: ${(props) => props.theme.colors.black5};
+              background: rgba(112, 115, 124, 0.22);
             }
           }
 
@@ -85,24 +104,28 @@ export const GridWrapper = styled.div<{
             justify-content: center;
 
             .ag-header-cell-text {
-              color: #333;
-              font-size: 1.4rem;
-              letter-spacing: 0;
+              color: rgba(46, 47, 51, 0.88);
+              font-family: "Pretendard Variable", "Pretendard", sans-serif;
+              font-size: 12px;
+              font-weight: 600;
+              line-height: 1.334;
+              letter-spacing: 0.3024px;
             }
           }
         }
 
         .ag-header-group-cell {
           justify-content: center;
-          color: #333;
-          font-size: 1.4rem;
-          letter-spacing: 0;
-          border-right: 1px solid #fff;
-
-          /* &:last-child {
-            border-right: none;
-          } */
+          color: rgba(46, 47, 51, 0.88);
+          font-family: "Pretendard Variable", "Pretendard", sans-serif;
+          font-size: 12px;
+          font-weight: 600;
+          line-height: 1.334;
+          letter-spacing: 0.3024px;
+          border-right: none;
+          background-color: #f7f7f8;
         }
+
         .ag-header-cell-comp-wrapper {
           display: flex;
           justify-content: center;
@@ -110,44 +133,53 @@ export const GridWrapper = styled.div<{
       }
     }
 
-    // GRID 내용 높이/border color 지정
+    /* ===== 셀 영역 (Figma: IsGridCell) ===== */
     .ag-body {
       min-height: 50px;
 
       .ag-row {
-        border-color: #eee;
-        border-bottom: 1px solid #fff;
+        border-color: rgba(112, 115, 124, 0.08);
+        border-bottom: none;
+        background-color: #ffffff;
 
         &:last-child {
           border-bottom: none;
         }
 
+        /* 짝수 행도 동일한 흰색 배경 */
         &:nth-child(even) {
-          background-color: #f7f7f7;
-        }
-        &.ag-row-hover:not(.ag-full-width-row)::before,
-        &.ag-row-hover.ag-full-width-row.ag-row-group::before {
-          background-color: #eee !important;
+          background-color: #ffffff;
         }
 
+        /* 호버 상태 */
+        &.ag-row-hover:not(.ag-full-width-row)::before,
+        &.ag-row-hover.ag-full-width-row.ag-row-group::before {
+          background-color: rgba(112, 115, 124, 0.05) !important;
+        }
+
+        /* 선택 상태 */
         &.ag-row-selected {
-          background-color: transparent !important;
+          background-color: rgba(112, 115, 124, 0.05) !important;
         }
 
         &.ag-row-selected::before {
-          background-color: transparent !important;
+          background-color: rgba(112, 115, 124, 0.05) !important;
         }
 
         .ag-cell {
-          padding: 12px;
+          padding: 0 12px;
           height: 100%;
-          color: #333;
-          font-size: 1.4rem;
-          letter-spacing: 0;
+          color: rgba(46, 47, 51, 0.88);
+          font-family: "Pretendard Variable", "Pretendard", sans-serif;
+          font-size: 12px;
+          font-weight: 500;
+          line-height: 1.334;
+          letter-spacing: 0.3024px;
           display: flex;
           align-items: center;
           justify-content: center;
-          border-right: 1px solid #e5e5e5;
+          border-right: none;
+          border-bottom: 1px solid rgba(112, 115, 124, 0.08);
 
           &:last-child {
             border-right: none;
@@ -156,8 +188,68 @@ export const GridWrapper = styled.div<{
           .ag-selection-checkbox {
             margin-right: 0;
           }
+
+          /* 링크 텍스트 스타일 */
+          a,
+          .link-text {
+            color: #1b2a6b;
+            text-decoration: none;
+          }
+
+          a:hover,
+          .link-text:hover {
+            text-decoration: underline;
+          }
         }
       }
+    }
+
+    /* ===== 체크박스 스타일 (AG-Grid v35+) ===== */
+    .ag-selection-checkbox,
+    .ag-header-select-all {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ag-checkbox-input-wrapper {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+
+      &::after {
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+        border-width: 1.5px;
+        border-color: rgba(112, 115, 124, 0.22);
+        background-color: transparent;
+      }
+
+      &.ag-checked::after {
+        background-color: #0066ff;
+        border-color: #0066ff;
+      }
+
+      &.ag-indeterminate::after {
+        background-color: #0066ff;
+        border-color: #0066ff;
+      }
+
+      input {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+      }
+    }
+
+    /* 체크박스 컬럼 너비 조정 */
+    .ag-header-cell[col-id="ag-Grid-SelectionColumn"],
+    .ag-cell[col-id="ag-Grid-SelectionColumn"] {
+      width: 50px !important;
+      min-width: 50px !important;
+      max-width: 50px !important;
+      padding: 0 12px;
     }
   }
 `;

@@ -312,3 +312,153 @@ export const LogoIcon = () => (
     </defs>
   </svg>
 );
+
+/** File Icon Small - 16x16 file icon for grid cells */
+export const FileIconSmall = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <path
+      d="M9 1H4C3.44772 1 3 1.44772 3 2V14C3 14.5523 3.44772 15 4 15H12C12.5523 15 13 14.5523 13 14V5L9 1Z"
+      stroke="currentColor"
+      strokeWidth="1.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M9 1V5H13"
+      stroke="currentColor"
+      strokeWidth="1.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+/** Folder Icon Small - 16x16 folder icon for grid cells */
+export const FolderIconSmall = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <path
+      d="M2 4C2 3.44772 2.44772 3 3 3H5.58579C5.851 3 6.10536 3.10536 6.29289 3.29289L7.70711 4.70711C7.89464 4.89464 8.149 5 8.41421 5H13C13.5523 5 14 5.44772 14 6V12C14 12.5523 13.5523 13 13 13H3C2.44772 13 2 12.5523 2 12V4Z"
+      stroke="currentColor"
+      strokeWidth="1.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+/** Edit Icon - Pencil icon for edit action */
+export const EditIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+    <path
+      d="M14.1667 2.5C14.3856 2.28113 14.6454 2.10752 14.9314 1.98906C15.2173 1.87061 15.5238 1.80965 15.8333 1.80965C16.1428 1.80965 16.4493 1.87061 16.7353 1.98906C17.0212 2.10752 17.281 2.28113 17.5 2.5C17.7189 2.71887 17.8925 2.97871 18.0109 3.26465C18.1294 3.5506 18.1904 3.85713 18.1904 4.16667C18.1904 4.4762 18.1294 4.78273 18.0109 5.06868C17.8925 5.35462 17.7189 5.61446 17.5 5.83333L6.25 17.0833L1.66667 18.3333L2.91667 13.75L14.1667 2.5Z"
+      stroke="currentColor"
+      strokeWidth="1.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+/** Move Icon - Folder move icon */
+export const MoveIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+    <path
+      d="M2.5 4C2.5 3.17157 3.17157 2.5 4 2.5H7.17157C7.70201 2.5 8.21071 2.71071 8.58579 3.08579L9.41421 3.91421C9.78929 4.28929 10.298 4.5 10.8284 4.5H16C16.8284 4.5 17.5 5.17157 17.5 6V14C17.5 14.8284 16.8284 15.5 16 15.5H4C3.17157 15.5 2.5 14.8284 2.5 14V4Z"
+      stroke="currentColor"
+      strokeWidth="1.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M10 8V12M10 12L8 10M10 12L12 10"
+      stroke="currentColor"
+      strokeWidth="1.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+/** Trash Icon - Delete icon */
+export const TrashIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+    <path
+      d="M2.5 5H17.5"
+      stroke="currentColor"
+      strokeWidth="1.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M15.8333 5V16.6667C15.8333 17.5 15 18.3333 14.1667 18.3333H5.83333C5 18.3333 4.16667 17.5 4.16667 16.6667V5"
+      stroke="currentColor"
+      strokeWidth="1.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M6.66667 5V3.33333C6.66667 2.5 7.5 1.66667 8.33333 1.66667H11.6667C12.5 1.66667 13.3333 2.5 13.3333 3.33333V5"
+      stroke="currentColor"
+      strokeWidth="1.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M8.33333 9.16667V14.1667"
+      stroke="currentColor"
+      strokeWidth="1.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M11.6667 9.16667V14.1667"
+      stroke="currentColor"
+      strokeWidth="1.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+/** More Vertical Icon - Vertical 3 dots for action menu (16x16) */
+export const MoreVerticalIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <circle cx="8" cy="3" r="1" fill="currentColor" />
+    <circle cx="8" cy="8" r="1" fill="currentColor" />
+    <circle cx="8" cy="13" r="1" fill="currentColor" />
+  </svg>
+);
+
+/** Sort Icon - Sort arrows for column headers */
+export const SortIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <path
+      d="M8 3L11 6H5L8 3Z"
+      fill="currentColor"
+    />
+    <path
+      d="M8 13L5 10H11L8 13Z"
+      fill="currentColor"
+    />
+  </svg>
+);
+
+/** Status Dot - Small colored dot for status indicators */
+export const StatusDot = ({ color = "currentColor" }: { color?: string }) => (
+  <svg width="6" height="6" viewBox="0 0 6 6" fill="none">
+    <circle cx="3" cy="3" r="3" fill={color} />
+  </svg>
+);
+
+/** Chevron Right Icon - For breadcrumb separator */
+export const ChevronRightIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <path
+      d="M6 12L10 8L6 4"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);

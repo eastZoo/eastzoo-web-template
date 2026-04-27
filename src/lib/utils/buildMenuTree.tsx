@@ -1,19 +1,4 @@
 import type { MenuType } from "@/types/menu";
-import IconMenu02 from "@/styles/assets/svg/icon_menu_01.svg";
-import IconMenu03 from "@/styles/assets/svg/icon_menu_02.svg";
-import IconMenu05 from "@/styles/assets/svg/icon_menu_03.svg";
-import IconMenu06 from "@/styles/assets/svg/icon_menu_04.svg";
-import IconMenu07 from "@/styles/assets/svg/icon_menu_05.svg";
-import IconMenu08 from "@/styles/assets/svg/icon_menu_06.svg";
-
-export const iconMap = {
-  IconMenu02: <IconMenu02 />,
-  IconMenu03: <IconMenu03 />,
-  IconMenu05: <IconMenu05 />,
-  IconMenu06: <IconMenu06 />,
-  IconMenu07: <IconMenu07 />,
-  IconMenu08: <IconMenu08 />,
-};
 
 export function buildMenuTree(flatList: MenuType[]) {
   const map = new Map<string, any>();
@@ -28,7 +13,8 @@ export function buildMenuTree(flatList: MenuType[]) {
       id: item.oid,
       oid: item.oid,
       title: item.title,
-      icon: item.icon ? iconMap[item.icon as keyof typeof iconMap] : undefined,
+      // 실제 렌더링은 SidemenuItem에서 icon key(string) 기반으로 처리
+      icon: item.icon,
       depth: item.depth,
       path: item.path,
       allowNavigation: item.allowNavigation,
