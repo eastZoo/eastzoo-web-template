@@ -23,15 +23,15 @@ import {
   TrashIcon,
 } from "@/styles/icons";
 import { UploadModal } from "@/components/molecules/UploadModal";
-import { CreateFolderModal } from "@/components/molecules/CreateFolderModal";
-import { EditFileModal } from "@/components/molecules/EditFileModal";
+import { CreateFolderModal } from "@/components/atoms/CreateFolderModal";
+import { EditFileModal } from "@/components/atoms/EditFileModal";
 import {
   MoveFileModal,
   type FolderItem,
-} from "@/components/molecules/MoveFileModal";
+} from "@/components/atoms/MoveFileModal";
 import { Alert } from "@/components/atoms/Alert";
 import { Pagination } from "@/components/atoms/Pagination";
-import Grid from "@/components/molecules/Grid";
+import Grid from "@/components/atoms/Grid";
 import {
   type FileItem,
   type FileManagementGridContext,

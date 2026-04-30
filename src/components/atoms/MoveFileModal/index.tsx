@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import styled from "styled-components";
-import { Modal } from "../../atoms/Modal";
+import { Modal } from "../Modal";
 
 /** 폴더 아이템 타입 */
 export interface FolderItem {
@@ -365,7 +365,7 @@ const MoveButton = styled.button`
   align-items: center;
   justify-content: center;
   padding: 8px 20px;
-  background: #2EC4A0;
+  background: #2ec4a0;
   border: none;
   border-radius: 8px;
   font-family: "Pretendard Variable", "Pretendard", sans-serif;
@@ -378,7 +378,7 @@ const MoveButton = styled.button`
   transition: background 0.15s ease;
 
   &:hover:not(:disabled) {
-    background: #26A88A;
+    background: #26a88a;
   }
 
   &:disabled {

@@ -15,7 +15,7 @@ export interface PaginatedData<T> {
 // ────────────────────────────────────────────────────────────
 
 export interface LoginRequest {
-  email: string;
+  userId: string;
   password: string;
 }
 
@@ -23,32 +23,73 @@ export interface LoginRequest {
  * POST /api/auth/login 응답 data
  *
  * - accessToken: 프론트엔드 메모리에 보관 (15분 유효)
- * - Refresh Token은 서버가 HttpOnly Cookie로 자동 설정 (응답 body에 없음)
- * - user.role: 서버의 RoleType ('ADMIN' | 'MANAGER' | 'DEVELOPER')
+ * - Refresh Token 은 서버가 HttpOnly Cookie 로 자동 설정 (응답 body에 없음)
+ * - user: sya_user 기반 사용자 정보 (regId, loginId, name, email)
  */
 export interface LoginData {
   accessToken: string;
   user: LoginUser;
 }
 
-/** POST /api/auth/login 응답의 user 필드 */
+/**
+ * POST /api/auth/login 응답의 user 필드 (sya_user 매핑)
+ *
+ * 사이드바 메뉴 조회 등에서는 regId 가 핵심 식별자입니다.
+ * 메뉴 API(/api/app/menus/me)는 JWT 에서 sub(=regId) 를 추출하므로
+ * 별도로 regId 를 요청 파라미터로 보낼 필요는 없습니다.
+ */
 export interface LoginUser {
-  id: string;       // UUID
-  email: string;
+  /** sya_user.reg_id (정수 PK) */
+  regId: number;
+  /** sya_user.id (로그인 ID, 예: 'inadmin') */
+  loginId: string;
+  /** sya_user.nm (성명) */
   name: string;
-  role: string;     // 'ADMIN' | 'MANAGER' | 'DEVELOPER'
+  /** sya_user.email — 없을 수 있음 */
+  email: string | null;
 }
 
 /**
- * GET /api/auth/me 응답 data (실제 백엔드)
+ * GET /api/auth/me 응답 data
  *
- * role은 서버의 RoleType 문자열 ('ADMIN' | 'MANAGER' | 'DEVELOPER').
+ * sya_user 의 추가 컬럼(useYn, coCd, bplcCd, empNo)도 함께 반환합니다.
  */
 export interface MeData {
-  id: string;
-  email: string;
+  regId: number;
+  loginId: string;
   name: string;
-  role: string;
-  roleDescription?: string;
-  isActive?: boolean;
+  email: string | null;
+  useYn?: string;
+  coCd?: string | null;
+  bplcCd?: string | null;
+  empNo?: string | null;
+}
+
+// ────────────────────────────────────────────────────────────
+// Menus — GET /api/permission/menu-list
+// ────────────────────────────────────────────────────────────
+
+/**
+ * 로그인 사용자에게 부여된 메뉴 1 건.
+ * sya_menu × sya_auth × sya_auth_dtl × sya_auth_menu 조인 결과를 정규화한 형태입니다.
+ */
+export interface UserMenuItem {
+  /** 메뉴코드 (PK) */
+  menuCd: string;
+  /** 메뉴명 */
+  menuName: string;
+  /** 상위메뉴코드 ('0' 또는 null 이면 최상위) */
+  upMenuCd: string | null;
+  /** 상위메뉴명 (없으면 빈 문자열) */
+  upMenuName: string;
+  /** 정렬 순서 */
+  sort: number;
+  /** 아이콘 식별자 */
+  icon: string | null;
+  /** 메뉴 URL — 클릭 시 이동 경로 */
+  url: string | null;
+  /** 사용여부 (Y/N). 서버가 'Y' 만 반환합니다. */
+  useYn: string;
+  /** 트리 깊이 (1 부터 시작) */
+  depth: number;
 }

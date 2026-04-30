@@ -15,9 +15,9 @@ import { IsButton, IsInputText } from "insystem-atoms";
    ======================================== */
 
 const SEED_ACCOUNTS = [
-  { email: "admin@eastzoo.local", role: "ADMIN" },
-  { email: "manager@eastzoo.local", role: "MANAGER" },
-  { email: "developer@eastzoo.local", role: "DEVELOPER" },
+  { userId: "admin", role: "ADMIN" },
+  { userId: "manager", role: "MANAGER" },
+  { userId: "developer", role: "DEVELOPER" },
 ] as const;
 
 const SEED_PASSWORD = "Admin123!";
@@ -167,7 +167,7 @@ export default function LoginPage() {
   const loginMutation = useLogin();
 
   /** 아이디 입력 상태 */
-  const [userId, setUserId] = useState<string>(SEED_ACCOUNTS[0].email);
+  const [userId, setUserId] = useState<string>(SEED_ACCOUNTS[0].userId);
   /** 비밀번호 입력 상태 */
   const [password, setPassword] = useState<string>(SEED_PASSWORD);
   /** 에러 메시지 상태 */
@@ -213,7 +213,7 @@ export default function LoginPage() {
 
     try {
       const res = await loginMutation.mutateAsync({
-        email: userId,
+        userId,
         password,
       });
 

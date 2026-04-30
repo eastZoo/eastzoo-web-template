@@ -1,5 +1,8 @@
 import type { JSX } from "react";
 
+// API(GET /api/permission/menu-list) 응답 항목 타입을 메뉴 도메인에서도 노출
+export type { UserMenuItem } from "./domain.types";
+
 export interface MenuItem {
   oid: string;
   title: string;

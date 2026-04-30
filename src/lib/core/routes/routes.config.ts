@@ -4,7 +4,7 @@
  * ╠══════════════════════════════════════════════════════════════╣
  * ║  새 페이지 추가                                                 ║
  * ║  1) 아래 ROUTE_CONFIGS 에 항목 추가                             ║
- * ║  2) npm run sync:pages  →  누락된 엔트리 파일 자동 생성            ║
+ * ║  2) npm run routes  →  누락된 엔트리 파일 생성                    ║
  * ║  3) 생성/직접 만든 파일에 화면 구현                                ║
  * ╚══════════════════════════════════════════════════════════════╝
  *
@@ -80,6 +80,12 @@ export const ROUTE_CONFIGS: RouteConfig[] = [
     path: "/file-management",
     name: "FileManagement",
     title: "파일 관리",
+    protected: true,
+  },
+  {
+    path: "/recycle-bin",
+    name: "RecycleBin",
+    title: "휴지통",
     protected: true,
   },
   {

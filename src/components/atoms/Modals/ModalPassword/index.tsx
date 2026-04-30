@@ -2,7 +2,7 @@ import type { FormEventHandler } from "react";
 import type { Control } from "react-hook-form";
 import type { ModalProps } from "..";
 import { Modals } from "..";
-import { Buttons } from "../../../atoms/Buttons";
+import { Buttons } from "../../Buttons";
 import { ControlText } from "../../../atoms/Controls/ControlText";
 import type { ChangePasswordInputs } from "../../../containers/Member/ChangePasswordModal";
 import { ModalFormBox } from "../Modals.style";

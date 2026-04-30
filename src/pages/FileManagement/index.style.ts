@@ -311,8 +311,9 @@ export const SearchLeft = styled.div`
 export const SearchInputWrapper = styled.div`
   width: 200px;
 
-  /* IsInputSearch 배경 스타일 오버라이드 */
-  & > div > div:first-child {
+  /* IsInputSearch FieldShell(실제 입력 박스)만 타겟팅 */
+  /* SearchInputWrapper > Root > InputStack > FieldShell */
+  & > div > div > div:first-child {
     background: rgba(112, 115, 124, 0.08);
     border: 1px solid rgba(112, 115, 124, 0.22);
   }
@@ -322,8 +323,8 @@ export const SearchInputWrapper = styled.div`
 export const SelectWrapper = styled.div`
   width: 120px;
 
-  /* IsSelect 배경 스타일 오버라이드 */
-  & button {
+  /* IsSelect 트리거 버튼만 타겟팅 (드롭다운 옵션 버튼은 제외) */
+  & button[aria-haspopup="listbox"] {
     background: rgba(112, 115, 124, 0.08);
     border: 1px solid rgba(112, 115, 124, 0.22);
   }
@@ -709,7 +710,8 @@ export const ActionButton = styled.button`
 export const VisibilitySelectWrapper = styled.div`
   width: 120px;
 
-  & button {
+  /* IsSelect 트리거 버튼만 타겟팅 (드롭다운 옵션 버튼은 제외) */
+  & button[aria-haspopup="listbox"] {
     background: #ffffff;
     border: 1px solid rgba(112, 115, 124, 0.22);
     height: 32px;

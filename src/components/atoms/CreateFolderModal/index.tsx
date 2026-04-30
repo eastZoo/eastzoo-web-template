@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { IsButton, IsInputText } from "insystem-atoms";
-import { Modal } from "../../atoms/Modal";
+import { Modal } from "../Modal";
 
 export interface CreateFolderModalProps {
   /** 모달 표시 여부 */

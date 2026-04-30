@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Modal } from "../../atoms/Modal";
-import { Alert } from "../../atoms/Alert";
+import { Modal } from "../Modal";
+import { Alert } from "../Alert";
 
 /** 공개 설정 타입 */
 type VisibilityType = "private" | "team" | "public";
@@ -242,7 +242,9 @@ export const EditFileModal = ({
                 type="text"
                 value={fileName}
                 onChange={handleFileNameChange}
-                placeholder={isFolder ? "폴더명을 입력하세요" : "파일명을 입력하세요"}
+                placeholder={
+                  isFolder ? "폴더명을 입력하세요" : "파일명을 입력하세요"
+                }
               />
               {fileName && (
                 <ClearButton type="button" onClick={handleClearFileName}>
@@ -259,8 +261,8 @@ export const EditFileModal = ({
                 <InfoCircleIcon />
               </InfoIconWrapper>
               <FolderInfoText>
-                폴더 내부 파일은 '나만보기'로 업로드되며, 업로드 후 파일 별로 공개
-                범위를 변경할 수 있습니다.
+                폴더 내부 파일은 '나만보기'로 업로드되며, 업로드 후 파일 별로
+                공개 범위를 변경할 수 있습니다.
               </FolderInfoText>
             </FolderInfoSection>
           ) : (
@@ -746,7 +748,7 @@ const SaveButton = styled.button`
   align-items: center;
   justify-content: center;
   padding: 8px 20px;
-  background: #2EC4A0;
+  background: #2ec4a0;
   border: none;
   border-radius: 8px;
   font-family: "Pretendard Variable", "Pretendard", sans-serif;
@@ -759,6 +761,6 @@ const SaveButton = styled.button`
   transition: background 0.15s ease;
 
   &:hover {
-    background: #26A88A;
+    background: #26a88a;
   }
 `;

@@ -7,7 +7,7 @@
  * - page: 마지막 세그먼트가 *Page → 해당 .tsx 파일
  *         그 외 → …/폴더/index.tsx
  *
- * 실행: npm run sync:pages
+ * 실행: npm run routes
  * 기존 파일은 덮어쓰지 않습니다.
  */
 
@@ -98,7 +98,7 @@ const pageTemplate = (componentBaseName, title) =>
   `/**
  * ${title}
  *
- * routes.config.ts 에 의해 sync:pages 로 생성되었을 수 있습니다.
+ * routes.config.ts 에 의해 npm run routes 로 생성되었을 수 있습니다.
  */
 export default function ${componentBaseName}Page() {
 /** ============================= state 영역 ============================= */
